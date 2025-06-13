@@ -8,7 +8,7 @@ import {
   IconTool,
   IconUserCog,
 } from '@tabler/icons-react'
-import { Store, Users2 } from 'lucide-react'
+import { Store, Users2, Target } from 'lucide-react'
 import { RpayLogo } from '@/components/rpay-logo'
 import { type SidebarData } from '../types'
 
@@ -43,6 +43,11 @@ export const sidebarData: SidebarData = {
           title: 'Customers',
           url: '/customers',
           icon: Users2,
+        },
+        {
+          title: 'Target Discovery',
+          url: '/target-discovery',
+          icon: Target,
         },
       ],
     },

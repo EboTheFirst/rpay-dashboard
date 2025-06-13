@@ -9,7 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
+import { ProfileDropdown } from '@/components/profile-dropdown'
+import { ThemeSwitch } from '@/components/theme-switch'
 import { useAgent } from '@/context/agent-context'
 
 interface PaginatedMerchantsResponse {
@@ -82,8 +85,18 @@ function AgentMerchantsPage() {
   }
 
   return (
-    <Main>
-      <div className="space-y-6">
+    <>
+      {/* ===== Top Heading ===== */}
+      <Header>
+        <div className='ml-auto flex items-center space-x-4'>
+          <ThemeSwitch />
+          <ProfileDropdown />
+        </div>
+      </Header>
+
+      {/* ===== Main ===== */}
+      <Main>
+        <div className="space-y-6">
         {/* Header */}
         <div className="space-y-4">
           <Button
@@ -239,8 +252,9 @@ function AgentMerchantsPage() {
             </ErrorBoundary>
           </CardContent>
         </Card>
-      </div>
-    </Main>
+        </div>
+      </Main>
+    </>
   )
 }
 

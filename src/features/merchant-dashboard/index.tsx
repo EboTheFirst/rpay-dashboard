@@ -22,6 +22,7 @@ import { ConnectionStatus } from '@/components/connection-status'
 import { ArrowLeft } from 'lucide-react'
 import { MerchantOverview } from './components/merchant-overview'
 import { MerchantTopCustomers } from './components/merchant-top-customers'
+import { MerchantTransactionFrequencyAnalysis } from './components/merchant-transaction-frequency-analysis'
 import { useMerchantStats, useMerchantDetails } from '@/hooks/use-merchants'
 import type { DateFilters } from '@/types/api'
 import { useNavigate } from '@tanstack/react-router'
@@ -98,6 +99,8 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
 
     return parts.length > 0 ? parts.join(', ') : 'Filtered period'
   }
+
+  console.log("Merchant Details: ", merchantDetails)
 
   return (
     <>
@@ -340,6 +343,14 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                 </ErrorBoundary>
               </CardContent>
             </Card>
+
+            {/* Transaction Frequency Analysis - Full Width */}
+            <ErrorBoundary>
+              <MerchantTransactionFrequencyAnalysis
+                merchantId={merchantId}
+                dateFilters={dateFilters}
+              />
+            </ErrorBoundary>
         </div>
         </ConnectionStatus>
       </Main>

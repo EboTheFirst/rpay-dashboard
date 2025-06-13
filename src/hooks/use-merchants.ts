@@ -47,11 +47,11 @@ const buildQueryParams = (
   dateFilters?: DateFilters
 ) => {
   const params = new URLSearchParams()
-  
+
   if (granularity) params.append('granularity', granularity)
   if (topMode) params.append('top_mode', topMode)
   if (topLimit) params.append('top_limit', topLimit.toString())
-  
+
   // Add date filters
   if (dateFilters) {
     Object.entries(dateFilters).forEach(([key, value]) => {
@@ -60,7 +60,7 @@ const buildQueryParams = (
       }
     })
   }
-  
+
   return params.toString()
 }
 
@@ -74,7 +74,7 @@ export const useMerchantStats = (
     queryFn: async () => {
       const params = buildQueryParams(undefined, undefined, undefined, dateFilters)
       const url = `${API_BASE_URL}/merchants/${merchantId}/stats${params ? `?${params}` : ''}`
-      
+
       const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`Failed to fetch merchant stats: ${response.statusText}`)
@@ -98,7 +98,7 @@ export const useMerchantOverview = (
     queryFn: async () => {
       const params = buildQueryParams(granularity, topMode, topLimit, dateFilters)
       const url = `${API_BASE_URL}/merchants/${merchantId}/overview${params ? `?${params}` : ''}`
-      
+
       const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`Failed to fetch merchant overview: ${response.statusText}`)
@@ -120,7 +120,7 @@ export const useMerchantTransactionVolume = (
     queryFn: async () => {
       const params = buildQueryParams(granularity, undefined, undefined, dateFilters)
       const url = `${API_BASE_URL}/merchants/${merchantId}/transaction-volume${params ? `?${params}` : ''}`
-      
+
       const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`Failed to fetch merchant transaction volume: ${response.statusText}`)
@@ -142,7 +142,7 @@ export const useMerchantTransactionCount = (
     queryFn: async () => {
       const params = buildQueryParams(granularity, undefined, undefined, dateFilters)
       const url = `${API_BASE_URL}/merchants/${merchantId}/transaction-count${params ? `?${params}` : ''}`
-      
+
       const response = await fetch(url)
       if (!response.ok) {
         throw new Error(`Failed to fetch merchant transaction count: ${response.statusText}`)
@@ -177,6 +177,27 @@ export const useMerchantTopCustomers = (
 }
 
 // Hook to get merchant details (name, etc.) from the merchants list
+export const useMerchantTransactionFrequencyAnalysis = (
+  merchantId: string,
+  dateFilters: DateFilters = {},
+  enabled: boolean = true
+) => {
+  return useQuery<TableData>({
+    queryKey: ['merchant-transaction-frequency-analysis', merchantId, dateFilters],
+    queryFn: async () => {
+      const params = buildQueryParams(undefined, undefined, undefined, dateFilters)
+      const url = `${API_BASE_URL}/merchants/${merchantId}/transaction-frequency-analysis${params ? `?${params}` : ''}`
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch merchant transaction frequency analysis: ${response.statusText}`)
+      }
+      return response.json()
+    },
+    enabled: enabled && !!merchantId,
+  })
+}
+
 export const useMerchantDetails = (merchantId: string, enabled: boolean = true) => {
   return useQuery<any>({
     queryKey: ['merchant-details', merchantId],
@@ -188,8 +209,7 @@ export const useMerchantDetails = (merchantId: string, enabled: boolean = true) 
       }
       const data = await response.json()
 
-      // Find the exact merchant from the results
-      const merchant = data.merchants?.find((m: any) => m.merchant_id === merchantId)
+      const merchant = data.data?.find((m: any) => m.merchant_id == merchantId)
       return merchant || { merchant_id: merchantId, merchant_name: null }
     },
     enabled: enabled && !!merchantId,

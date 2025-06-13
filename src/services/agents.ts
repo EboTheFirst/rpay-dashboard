@@ -128,4 +128,15 @@ export const agentsApi = {
     })
     return response.data
   },
+
+  // Get transaction frequency analysis
+  getTransactionFrequencyAnalysis: async (
+    agentId: string,
+    params: DateFilters = {}
+  ): Promise<TableData> => {
+    const response = await api.get(`/agents/${agentId}/transaction-frequency-analysis`, {
+      params,
+    })
+    return response.data
+  },
 }

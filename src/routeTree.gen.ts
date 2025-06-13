@@ -30,6 +30,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedMerchantsRouteImport } from './routes/_authenticated/merchants/route'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers/route'
 import { Route as AuthenticatedAgentsRouteImport } from './routes/_authenticated/agents/route'
+import { Route as AuthenticatedTargetDiscoveryIndexImport } from './routes/_authenticated/target-discovery/index'
 import { Route as AuthenticatedSettingsIndexImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedMerchantsIndexImport } from './routes/_authenticated/merchants/index'
 import { Route as AuthenticatedHelpCenterIndexImport } from './routes/_authenticated/help-center/index'
@@ -43,6 +44,10 @@ import { Route as AuthenticatedSettingsAppearanceImport } from './routes/_authen
 import { Route as AuthenticatedSettingsAccountImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedMerchantsMerchantIdImport } from './routes/_authenticated/merchants/$merchantId'
 import { Route as AuthenticatedAgentsAgentIdRouteImport } from './routes/_authenticated/agents/$agentId/route'
+import { Route as AuthenticatedTargetDiscoveryMerchantsIndexImport } from './routes/_authenticated/target-discovery/merchants/index'
+import { Route as AuthenticatedTargetDiscoveryCustomersIndexImport } from './routes/_authenticated/target-discovery/customers/index'
+import { Route as AuthenticatedTargetDiscoveryMerchantsSearchImport } from './routes/_authenticated/target-discovery/merchants/search'
+import { Route as AuthenticatedTargetDiscoveryCustomersSearchImport } from './routes/_authenticated/target-discovery/customers/search'
 
 // Create/Update Routes
 
@@ -161,6 +166,13 @@ const AuthenticatedAgentsRouteRoute = AuthenticatedAgentsRouteImport.update({
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
+const AuthenticatedTargetDiscoveryIndexRoute =
+  AuthenticatedTargetDiscoveryIndexImport.update({
+    id: '/target-discovery/',
+    path: '/target-discovery/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
 const AuthenticatedSettingsIndexRoute = AuthenticatedSettingsIndexImport.update(
   {
     id: '/',
@@ -249,6 +261,34 @@ const AuthenticatedAgentsAgentIdRouteRoute =
     id: '/$agentId',
     path: '/$agentId',
     getParentRoute: () => AuthenticatedAgentsRouteRoute,
+  } as any)
+
+const AuthenticatedTargetDiscoveryMerchantsIndexRoute =
+  AuthenticatedTargetDiscoveryMerchantsIndexImport.update({
+    id: '/target-discovery/merchants/',
+    path: '/target-discovery/merchants/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
+const AuthenticatedTargetDiscoveryCustomersIndexRoute =
+  AuthenticatedTargetDiscoveryCustomersIndexImport.update({
+    id: '/target-discovery/customers/',
+    path: '/target-discovery/customers/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
+const AuthenticatedTargetDiscoveryMerchantsSearchRoute =
+  AuthenticatedTargetDiscoveryMerchantsSearchImport.update({
+    id: '/target-discovery/merchants/search',
+    path: '/target-discovery/merchants/search',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
+const AuthenticatedTargetDiscoveryCustomersSearchRoute =
+  AuthenticatedTargetDiscoveryCustomersSearchImport.update({
+    id: '/target-discovery/customers/search',
+    path: '/target-discovery/customers/search',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -479,6 +519,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsIndexImport
       parentRoute: typeof AuthenticatedSettingsRouteImport
     }
+    '/_authenticated/target-discovery/': {
+      id: '/_authenticated/target-discovery/'
+      path: '/target-discovery'
+      fullPath: '/target-discovery'
+      preLoaderRoute: typeof AuthenticatedTargetDiscoveryIndexImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/target-discovery/customers/search': {
+      id: '/_authenticated/target-discovery/customers/search'
+      path: '/target-discovery/customers/search'
+      fullPath: '/target-discovery/customers/search'
+      preLoaderRoute: typeof AuthenticatedTargetDiscoveryCustomersSearchImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/target-discovery/merchants/search': {
+      id: '/_authenticated/target-discovery/merchants/search'
+      path: '/target-discovery/merchants/search'
+      fullPath: '/target-discovery/merchants/search'
+      preLoaderRoute: typeof AuthenticatedTargetDiscoveryMerchantsSearchImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/target-discovery/customers/': {
+      id: '/_authenticated/target-discovery/customers/'
+      path: '/target-discovery/customers'
+      fullPath: '/target-discovery/customers'
+      preLoaderRoute: typeof AuthenticatedTargetDiscoveryCustomersIndexImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/target-discovery/merchants/': {
+      id: '/_authenticated/target-discovery/merchants/'
+      path: '/target-discovery/merchants'
+      fullPath: '/target-discovery/merchants'
+      preLoaderRoute: typeof AuthenticatedTargetDiscoveryMerchantsIndexImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
   }
 }
 
@@ -559,6 +634,11 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedHelpCenterIndexRoute: typeof AuthenticatedHelpCenterIndexRoute
+  AuthenticatedTargetDiscoveryIndexRoute: typeof AuthenticatedTargetDiscoveryIndexRoute
+  AuthenticatedTargetDiscoveryCustomersSearchRoute: typeof AuthenticatedTargetDiscoveryCustomersSearchRoute
+  AuthenticatedTargetDiscoveryMerchantsSearchRoute: typeof AuthenticatedTargetDiscoveryMerchantsSearchRoute
+  AuthenticatedTargetDiscoveryCustomersIndexRoute: typeof AuthenticatedTargetDiscoveryCustomersIndexRoute
+  AuthenticatedTargetDiscoveryMerchantsIndexRoute: typeof AuthenticatedTargetDiscoveryMerchantsIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -570,6 +650,16 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedHelpCenterIndexRoute: AuthenticatedHelpCenterIndexRoute,
+  AuthenticatedTargetDiscoveryIndexRoute:
+    AuthenticatedTargetDiscoveryIndexRoute,
+  AuthenticatedTargetDiscoveryCustomersSearchRoute:
+    AuthenticatedTargetDiscoveryCustomersSearchRoute,
+  AuthenticatedTargetDiscoveryMerchantsSearchRoute:
+    AuthenticatedTargetDiscoveryMerchantsSearchRoute,
+  AuthenticatedTargetDiscoveryCustomersIndexRoute:
+    AuthenticatedTargetDiscoveryCustomersIndexRoute,
+  AuthenticatedTargetDiscoveryMerchantsIndexRoute:
+    AuthenticatedTargetDiscoveryMerchantsIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -650,6 +740,11 @@ export interface FileRoutesByFullPath {
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
   '/merchants/': typeof AuthenticatedMerchantsIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
+  '/target-discovery': typeof AuthenticatedTargetDiscoveryIndexRoute
+  '/target-discovery/customers/search': typeof AuthenticatedTargetDiscoveryCustomersSearchRoute
+  '/target-discovery/merchants/search': typeof AuthenticatedTargetDiscoveryMerchantsSearchRoute
+  '/target-discovery/customers': typeof AuthenticatedTargetDiscoveryCustomersIndexRoute
+  '/target-discovery/merchants': typeof AuthenticatedTargetDiscoveryMerchantsIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -679,6 +774,11 @@ export interface FileRoutesByTo {
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
   '/merchants': typeof AuthenticatedMerchantsIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
+  '/target-discovery': typeof AuthenticatedTargetDiscoveryIndexRoute
+  '/target-discovery/customers/search': typeof AuthenticatedTargetDiscoveryCustomersSearchRoute
+  '/target-discovery/merchants/search': typeof AuthenticatedTargetDiscoveryMerchantsSearchRoute
+  '/target-discovery/customers': typeof AuthenticatedTargetDiscoveryCustomersIndexRoute
+  '/target-discovery/merchants': typeof AuthenticatedTargetDiscoveryMerchantsIndexRoute
 }
 
 export interface FileRoutesById {
@@ -715,6 +815,11 @@ export interface FileRoutesById {
   '/_authenticated/help-center/': typeof AuthenticatedHelpCenterIndexRoute
   '/_authenticated/merchants/': typeof AuthenticatedMerchantsIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
+  '/_authenticated/target-discovery/': typeof AuthenticatedTargetDiscoveryIndexRoute
+  '/_authenticated/target-discovery/customers/search': typeof AuthenticatedTargetDiscoveryCustomersSearchRoute
+  '/_authenticated/target-discovery/merchants/search': typeof AuthenticatedTargetDiscoveryMerchantsSearchRoute
+  '/_authenticated/target-discovery/customers/': typeof AuthenticatedTargetDiscoveryCustomersIndexRoute
+  '/_authenticated/target-discovery/merchants/': typeof AuthenticatedTargetDiscoveryMerchantsIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -751,6 +856,11 @@ export interface FileRouteTypes {
     | '/help-center'
     | '/merchants/'
     | '/settings/'
+    | '/target-discovery'
+    | '/target-discovery/customers/search'
+    | '/target-discovery/merchants/search'
+    | '/target-discovery/customers'
+    | '/target-discovery/merchants'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/agents'
@@ -779,6 +889,11 @@ export interface FileRouteTypes {
     | '/help-center'
     | '/merchants'
     | '/settings'
+    | '/target-discovery'
+    | '/target-discovery/customers/search'
+    | '/target-discovery/merchants/search'
+    | '/target-discovery/customers'
+    | '/target-discovery/merchants'
   id:
     | '__root__'
     | '/_authenticated'
@@ -813,6 +928,11 @@ export interface FileRouteTypes {
     | '/_authenticated/help-center/'
     | '/_authenticated/merchants/'
     | '/_authenticated/settings/'
+    | '/_authenticated/target-discovery/'
+    | '/_authenticated/target-discovery/customers/search'
+    | '/_authenticated/target-discovery/merchants/search'
+    | '/_authenticated/target-discovery/customers/'
+    | '/_authenticated/target-discovery/merchants/'
   fileRoutesById: FileRoutesById
 }
 
@@ -878,7 +998,12 @@ export const routeTree = rootRoute
         "/_authenticated/merchants",
         "/_authenticated/settings",
         "/_authenticated/",
-        "/_authenticated/help-center/"
+        "/_authenticated/help-center/",
+        "/_authenticated/target-discovery/",
+        "/_authenticated/target-discovery/customers/search",
+        "/_authenticated/target-discovery/merchants/search",
+        "/_authenticated/target-discovery/customers/",
+        "/_authenticated/target-discovery/merchants/"
       ]
     },
     "/clerk": {
@@ -1021,6 +1146,26 @@ export const routeTree = rootRoute
     "/_authenticated/settings/": {
       "filePath": "_authenticated/settings/index.tsx",
       "parent": "/_authenticated/settings"
+    },
+    "/_authenticated/target-discovery/": {
+      "filePath": "_authenticated/target-discovery/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/target-discovery/customers/search": {
+      "filePath": "_authenticated/target-discovery/customers/search.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/target-discovery/merchants/search": {
+      "filePath": "_authenticated/target-discovery/merchants/search.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/target-discovery/customers/": {
+      "filePath": "_authenticated/target-discovery/customers/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/target-discovery/merchants/": {
+      "filePath": "_authenticated/target-discovery/merchants/index.tsx",
+      "parent": "/_authenticated"
     }
   }
 }

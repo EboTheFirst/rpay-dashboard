@@ -28,6 +28,7 @@ import { Overview } from './components/overview'
 import { RecentSales } from './components/recent-sales'
 import { TopMerchants } from './components/top-merchants'
 import { MerchantActivityHeatmap } from './components/merchant-activity-heatmap'
+import { TransactionFrequencyAnalysis } from './components/transaction-frequency-analysis'
 
 import { useAgentStats } from '@/hooks/use-agents'
 import { useAgent } from '@/context/agent-context'
@@ -426,6 +427,14 @@ export default function Dashboard() {
                 </ErrorBoundary>
               </CardContent>
             </Card>
+
+            {/* Transaction Frequency Analysis - Full Width */}
+            <ErrorBoundary>
+              <TransactionFrequencyAnalysis
+                agentId={selectedAgent}
+                dateFilters={dateFilters}
+              />
+            </ErrorBoundary>
         </div>
         </ConnectionStatus>
       </Main>

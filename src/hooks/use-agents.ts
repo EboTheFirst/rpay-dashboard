@@ -33,6 +33,8 @@ export const agentKeys = {
     [...agentKeys.agent(id), 'merchant-segmentation', params] as const,
   merchantActivityHeatmap: (id: string, params: GraphParams) =>
     [...agentKeys.agent(id), 'merchant-activity-heatmap', params] as const,
+  transactionFrequencyAnalysis: (id: string, params?: DateFilters) =>
+    [...agentKeys.agent(id), 'transaction-frequency-analysis', params] as const,
 }
 
 // Hooks
@@ -130,6 +132,18 @@ export const useAgentMerchantActivityHeatmap = (
   return useQuery({
     queryKey: agentKeys.merchantActivityHeatmap(agentId, params),
     queryFn: () => agentsApi.getMerchantActivityHeatmap(agentId, params),
+    enabled: enabled && !!agentId,
+  })
+}
+
+export const useAgentTransactionFrequencyAnalysis = (
+  agentId: string,
+  params: DateFilters = {},
+  enabled = true
+) => {
+  return useQuery({
+    queryKey: agentKeys.transactionFrequencyAnalysis(agentId, params),
+    queryFn: () => agentsApi.getTransactionFrequencyAnalysis(agentId, params),
     enabled: enabled && !!agentId,
   })
 }

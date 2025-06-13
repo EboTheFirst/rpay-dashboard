@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, ChevronLeft, ChevronRight, ExternalLink, Search } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -9,7 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
+import { ProfileDropdown } from '@/components/profile-dropdown'
+import { ThemeSwitch } from '@/components/theme-switch'
 import { useAgent } from '@/context/agent-context'
 
 interface PaginatedCustomersResponse {
@@ -82,8 +85,18 @@ function AgentCustomersPage() {
   }
 
   return (
-    <Main>
-      <div className="space-y-6">
+    <>
+      {/* ===== Top Heading ===== */}
+      <Header>
+        <div className='ml-auto flex items-center space-x-4'>
+          <ThemeSwitch />
+          <ProfileDropdown />
+        </div>
+      </Header>
+
+      {/* ===== Main ===== */}
+      <Main>
+        <div className="space-y-6">
         {/* Header */}
         <div className="space-y-4">
           <Button
@@ -158,9 +171,6 @@ function AgentCustomersPage() {
                         >
                           Customer ID {getSortIcon('customer_id')}
                         </TableHead>
-                        <TableHead>
-                          Name
-                        </TableHead>
                         <TableHead
                           className="text-right cursor-pointer hover:bg-muted/50"
                           onClick={() => handleSort('total_amount')}
@@ -173,7 +183,6 @@ function AgentCustomersPage() {
                         >
                           Transactions {getSortIcon('transaction_count')}
                         </TableHead>
-                        <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -182,9 +191,6 @@ function AgentCustomersPage() {
                           <TableCell className="font-medium">
                             {customer.customer_id}
                           </TableCell>
-                          <TableCell>
-                            {customer.customer_name || '-'}
-                          </TableCell>
                           <TableCell className="text-right">
                             ₵{customer.total_amount.toLocaleString()}
                           </TableCell>
@@ -192,16 +198,6 @@ function AgentCustomersPage() {
                             <Badge variant="secondary">
                               {customer.transaction_count}
                             </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => navigate({ to: `/customers/${customer.customer_id}` })}
-                              title="View customer dashboard"
-                            >
-                              <ExternalLink className="h-3 w-3" />
-                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -239,8 +235,9 @@ function AgentCustomersPage() {
             </ErrorBoundary>
           </CardContent>
         </Card>
-      </div>
-    </Main>
+        </div>
+      </Main>
+    </>
   )
 }
 

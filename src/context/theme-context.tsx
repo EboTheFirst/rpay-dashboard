@@ -14,7 +14,7 @@ type ThemeProviderState = {
 }
 
 const initialState: ThemeProviderState = {
-  theme: 'system',
+  theme: 'transflow-light',
   setTheme: () => null,
 }
 
@@ -22,7 +22,7 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'system',
+  defaultTheme = 'transflow-light',
   storageKey = 'vite-ui-theme',
   ...props
 }: ThemeProviderProps) {
@@ -36,7 +36,7 @@ export function ThemeProvider({
 
     const applyTheme = (theme: Theme) => {
       root.classList.remove('light', 'dark', 'transflow-light', 'transflow-dark') // Remove existing theme classes
-      const systemTheme = mediaQuery.matches ? 'dark' : 'light'
+      const systemTheme = mediaQuery.matches ? 'transflow-dark' : 'transflow-light'
       const effectiveTheme = theme === 'system' ? systemTheme : theme
       root.classList.add(effectiveTheme) // Add the new theme class
     }

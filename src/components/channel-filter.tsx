@@ -20,8 +20,7 @@ interface ChannelFilterProps {
 }
 
 const CHANNEL_OPTIONS = [
-  { value: 'ATM', label: 'ATM' },
-  { value: 'Online', label: 'Online' },
+  { value: 'Cash', label: 'Cash' },
   { value: 'POS', label: 'POS' },
   { value: 'Mobile', label: 'Mobile' },
   { value: 'Bank Transfer', label: 'Bank Transfer' },

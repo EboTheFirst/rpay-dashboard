@@ -39,11 +39,11 @@ export const sidebarData: SidebarData = {
           url: '/merchants',
           icon: Store,
         },
-        {
-          title: 'Customers',
-          url: '/customers',
-          icon: Users2,
-        },
+        // {
+        //   title: 'Customers',
+        //   url: '/customers',
+        //   icon: Users2,
+        // },
         {
           title: 'Target Discovery',
           url: '/target-discovery',

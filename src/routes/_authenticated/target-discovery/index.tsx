@@ -42,7 +42,8 @@ function TargetDiscoveryPage() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Target Discovery</h1>
             <p className="text-muted-foreground">
-              Find and target merchants and customers based on specific criteria for product offerings
+              {/* Find and target merchants and customers based on specific criteria for product offerings */}
+              Find and target merchants based on specific criteria for product offerings
             </p>
           </div>
         </div>
@@ -84,7 +85,7 @@ function TargetDiscoveryPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users2 className="h-5 w-5" />
@@ -118,7 +119,7 @@ function TargetDiscoveryPage() {
               </Button>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
 
 

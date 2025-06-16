@@ -84,6 +84,16 @@ export function FilterSummary({
     })
   }
 
+  // Add channel filter
+  if (dateFilters.channel) {
+    activeFilters.push({
+      key: 'channel' as keyof DateFilters,
+      label: `Channel: ${dateFilters.channel}`,
+      value: dateFilters.channel,
+      type: 'channel'
+    })
+  }
+
   const hasActiveFilters = activeFilters.length > 0
 
   if (!hasActiveFilters) {

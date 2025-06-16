@@ -16,9 +16,9 @@ interface MerchantActivityHeatmapProps {
 interface HeatmapData {
   metric: string
   periods: string[]
-  transaction_volume: Array<{ merchant: string; [key: string]: any }>
-  transaction_count: Array<{ merchant: string; [key: string]: any }>
-  average_transaction_value: Array<{ merchant: string; [key: string]: any }>
+  transaction_volume: Array<{ merchant: string;[key: string]: any }>
+  transaction_count: Array<{ merchant: string;[key: string]: any }>
+  average_transaction_value: Array<{ merchant: string;[key: string]: any }>
 }
 
 const MERCHANTS_PER_PAGE = 10
@@ -49,12 +49,20 @@ export function MerchantActivityHeatmap({
           text: '#f8fafc'
         }
       case 'transflow-light':
-        return {
-          low: '#f1f5f9',
-          medium: '#08518A',
-          high: '#0369a1',
-          text: '#0f172a'
-        }
+        return  {
+        "low": "#f1f5f9",
+        "medium": "#60a5fa",
+        "high": "#3b82f6",
+        "text": "#0f172a"
+      }
+        // return {
+        //   "low": "#fef2f2",
+        //   "medium": "#f87171",
+        //   "high": "#ef4444",
+        //   "text": "#0f172a"
+        // }
+             
+
       case 'transflow-dark':
         return {
           low: '#1e293b',
@@ -131,9 +139,9 @@ export function MerchantActivityHeatmap({
   const paginatedData = data.slice(startIndex, endIndex)
 
   // Calculate value ranges for color scaling
-  const allValues = data.flatMap(merchant => 
-    periods.map(period => merchant[period] || 0)
-  ).filter(val => val > 0)
+  const allValues = data.flatMap((merchant: any) =>
+    periods.map((period: any) => merchant[period] || 0)
+  ).filter((val: number) => val > 0)
 
   const minValue = Math.min(...allValues)
   const maxValue = Math.max(...allValues)
@@ -164,7 +172,7 @@ export function MerchantActivityHeatmap({
             Showing {startIndex + 1}-{Math.min(endIndex, totalMerchants)} of {totalMerchants} merchants
           </p>
         </div>
-        
+
         {totalPages > 1 && (
           <div className="flex items-center gap-2">
             <Button
@@ -198,7 +206,7 @@ export function MerchantActivityHeatmap({
             <div className="p-2 text-xs font-medium text-muted-foreground">
               Merchant
             </div>
-            {periods.map(period => (
+            {periods.map((period: any) => (
               <div key={period} className="p-2 text-xs font-medium text-muted-foreground text-center">
                 {period}
               </div>
@@ -207,16 +215,16 @@ export function MerchantActivityHeatmap({
 
           {/* Data rows */}
           <div className="space-y-1">
-            {paginatedData.map((merchant, index) => (
-              <div 
-                key={merchant.merchant} 
-                className="grid gap-1" 
+            {paginatedData.map((merchant: any, index: any) => (
+              <div
+                key={merchant.merchant}
+                className="grid gap-1"
                 style={{ gridTemplateColumns: `200px repeat(${periods.length}, 80px)` }}
               >
                 <div className="p-2 text-xs font-medium truncate bg-muted/50 rounded">
                   {merchant.merchant}
                 </div>
-                {periods.map(period => {
+                {periods.map((period: any) => {
                   const value = merchant[period] || 0
                   return (
                     <div

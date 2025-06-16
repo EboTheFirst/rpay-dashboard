@@ -14,6 +14,7 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
 
 import { DateFiltersComponent } from '@/components/date-filters'
+import { ChannelFilter } from '@/components/channel-filter'
 import { GranularitySelector } from '@/components/granularity-selector'
 import { TopModeSelector } from '@/components/top-mode-selector'
 import { ChartTypeSelector } from '@/components/chart-type-selector'
@@ -102,6 +103,10 @@ export default function Dashboard() {
       parts.push(`Day ${filters.day}`)
     }
 
+    if (filters.channel) {
+      parts.push(`Channel: ${filters.channel}`)
+    }
+
     return parts.length > 0 ? parts.join(', ') : 'Filtered period'
   }
 
@@ -129,14 +134,26 @@ export default function Dashboard() {
               <Button>Download</Button>
             </div>
           </div>
-        {/* Date Filters Section */}
+        {/* Filters Section */}
         <ErrorBoundary>
-          <div className='max-w-md'>
-            <DateFiltersComponent
-              filters={dateFilters}
-              onFiltersChange={setDateFilters}
-              onClear={clearFilters}
-            />
+          <div className='flex gap-4 flex-wrap'>
+            <div className='max-w-md'>
+              <DateFiltersComponent
+                filters={dateFilters}
+                onFiltersChange={setDateFilters}
+                onClear={clearFilters}
+              />
+            </div>
+            <div className='max-w-xs'>
+              <ChannelFilter
+                filters={dateFilters}
+                onFiltersChange={setDateFilters}
+                onClear={() => {
+                  const { channel, ...restFilters } = dateFilters
+                  setDateFilters(restFilters)
+                }}
+              />
+            </div>
           </div>
         </ErrorBoundary>
 

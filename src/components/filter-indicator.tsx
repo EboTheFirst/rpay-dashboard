@@ -27,6 +27,7 @@ export function FilterIndicator({ dateFilters, className = '' }: FilterIndicator
     if (dateFilters.end_date) filters.push(`to ${dateFilters.end_date}`)
     if (dateFilters.week) filters.push(`W${dateFilters.week}`)
     if (dateFilters.day) filters.push(`D${dateFilters.day}`)
+    if (dateFilters.channel) filters.push(dateFilters.channel)
 
     return filters.slice(0, 2).join(', ') + (filters.length > 2 ? '...' : '')
   }

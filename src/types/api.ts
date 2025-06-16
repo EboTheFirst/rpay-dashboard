@@ -39,6 +39,7 @@ export interface DateFilters {
   range_days?: number
   start_date?: string
   end_date?: string
+  channel?: string
 }
 
 export interface AgentOverviewParams extends DateFilters {

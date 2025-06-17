@@ -25,15 +25,15 @@ export function MerchantTopCustomers({
 
   if (isLoading) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-4">
         {Array.from({ length: limit }).map((_, i) => (
-          <div key={i} className="flex items-center">
+          <div key={i} className="flex items-center gap-4">
             <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
-            <div className="ml-4 space-y-1">
+            <div className="flex-1 space-y-1">
               <div className="h-4 w-24 bg-muted rounded animate-pulse" />
               <div className="h-3 w-16 bg-muted rounded animate-pulse" />
             </div>
-            <div className="ml-auto h-4 w-16 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-16 bg-muted rounded animate-pulse" />
           </div>
         ))}
       </div>
@@ -59,33 +59,41 @@ export function MerchantTopCustomers({
   }
 
   return (
-    <div className="space-y-8">
-      {customers.slice(0, limit).map((customer: any, index: number) => (
-        <div key={customer.customer_id || index} className="flex items-center">
-          <Avatar className="h-9 w-9">
-            <AvatarFallback>
-              {customer.customer_id ? customer.customer_id.slice(0, 2).toUpperCase() : 'CU'}
-            </AvatarFallback>
-          </Avatar>
-          <div className="ml-4 space-y-1">
-            <p className="text-sm font-medium leading-none">
-              {customer.customer_name || customer.customer_id || 'Unknown Customer'}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {mode === 'amount'
-                ? `${customer.transaction_count || 0} transactions`
-                : `₵${(customer.total_amount || 0).toLocaleString()}`
-              }
-            </p>
+    <div className="space-y-4">
+      {customers.slice(0, limit).map((customer: any, index: number) => {
+        // Generate initials from customer_id or use index
+        const customerId = customer.customer_id || `Customer ${index + 1}`
+        const initials = customerId
+          .split(' ')
+          .map(word => word.charAt(0))
+          .join('')
+          .toUpperCase()
+          .slice(0, 2) || 'C'
+
+        return (
+          <div key={customer.customer_id || index} className="flex items-center gap-4">
+            <Avatar className="h-9 w-9">
+              <AvatarFallback>{initials}</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-1 items-center justify-between">
+              <div className="space-y-1">
+                <p className="text-sm font-medium leading-none">
+                  {customer.customer_name || customer.customer_id || 'Unknown Customer'}
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  {customer.transaction_count || 0} transactions
+                </p>
+              </div>
+              <div className="font-medium">
+                {mode === 'amount'
+                  ? `₵${(customer.total_amount || 0).toLocaleString()}`
+                  : `${customer.transaction_count || 0} txns`
+                }
+              </div>
+            </div>
           </div>
-          <div className="ml-auto font-medium">
-            {mode === 'amount'
-              ? `₵${(customer.total_amount || 0).toLocaleString()}`
-              : `${customer.transaction_count || 0}`
-            }
-          </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

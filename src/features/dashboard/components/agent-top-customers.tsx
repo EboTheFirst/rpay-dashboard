@@ -1,20 +1,20 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { useAgentTopCustomers } from '@/hooks/use-agents'
 import type { DateFilters } from '@/types/api'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
-interface RecentSalesProps {
+interface AgentTopCustomersProps {
   agentId?: string
-  mode?: 'amount' | 'count'
-  limit?: number
-  dateFilters?: DateFilters
+  mode: 'amount' | 'count'
+  limit: number
+  dateFilters: DateFilters
 }
 
-export function RecentSales({
-  agentId,
-  mode = 'amount',
-  limit = 5,
-  dateFilters = {}
-}: RecentSalesProps) {
+export function AgentTopCustomers({ 
+  agentId, 
+  mode, 
+  limit, 
+  dateFilters 
+}: AgentTopCustomersProps) {
   const { data: topCustomers, isLoading, error } = useAgentTopCustomers(
     agentId || '',
     { mode, limit, ...dateFilters },
@@ -23,7 +23,7 @@ export function RecentSales({
 
   if (isLoading) {
     return (
-      <div className='space-y-8'>
+      <div className='space-y-4'>
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className='flex items-center gap-4'>
             <div className='h-9 w-9 rounded-full bg-muted animate-pulse' />
@@ -67,7 +67,7 @@ export function RecentSales({
   }
 
   return (
-    <div className='space-y-8'>
+    <div className='space-y-4'>
       {customers.slice(0, 5).map((customer: any, index: number) => {
         const initials = customer.customer_name
           ? customer.customer_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)

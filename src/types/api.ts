@@ -30,6 +30,49 @@ export interface AgentOverview {
   days_between_transactions: TableData
 }
 
+// Branch API Response Types
+export interface BranchStat {
+  metric: string
+  value: number
+}
+
+export interface BranchOverview {
+  transaction_volume: GraphData
+  transaction_count: GraphData
+  average_transactions: GraphData
+  segmentation: TableData
+  top_customers: TableData
+  transaction_outliers: TableData
+  days_between_transactions: TableData
+  transaction_frequency: TableData
+  stats: BranchStat[]
+}
+
+export interface BranchDetails {
+  branch_admin_id: string
+  branch_name: string
+  merchant_id: string
+  merchant_name?: string
+}
+
+// Terminal API Response Types
+export interface TerminalStat {
+  metric: string
+  value: number
+}
+
+export interface TerminalOverview {
+  transaction_volume: GraphData
+  transaction_count: GraphData
+  average_transactions: GraphData
+  segmentation: TableData
+  top_customers: TableData
+  transaction_outliers: TableData
+  days_between_transactions: TableData
+  transaction_frequency: TableData
+  stats: TerminalStat[]
+}
+
 // API Query Parameters
 export interface DateFilters {
   year?: number

@@ -21,96 +21,42 @@ import { FilterSummary } from '@/components/filter-summary'
 import { FilterIndicator } from '@/components/filter-indicator'
 import { ErrorBoundary } from '@/components/error-boundary'
 import { ConnectionStatus } from '@/components/connection-status'
-import { ArrowLeft, Building2 } from 'lucide-react'
-import { MerchantOverview } from './components/merchant-overview'
-import { MerchantTopCustomers } from './components/merchant-top-customers'
-import { MerchantTopBranches } from './components/merchant-top-branches'
-import { MerchantBranchActivityHeatmap } from './components/merchant-branch-activity-heatmap'
-import { MerchantTransactionFrequencyAnalysis } from './components/merchant-transaction-frequency-analysis'
-import { useMerchantStats, useMerchantDetails } from '@/hooks/use-merchants'
+import { ArrowLeft, Monitor, Building2 } from 'lucide-react'
+import { BranchOverview } from './components/branch-overview'
+import { BranchTopCustomers } from './components/branch-top-customers'
+import { BranchTopTerminals } from './components/branch-top-terminals'
+import { BranchTerminalActivityHeatmap } from './components/branch-terminal-activity-heatmap'
+import { BranchTransactionFrequencyAnalysis } from './components/branch-transaction-frequency-analysis'
+import { useBranchStats, useBranchDetails } from '@/hooks/use-branches'
 import type { DateFilters } from '@/types/api'
 import { useNavigate } from '@tanstack/react-router'
 
-interface MerchantDashboardProps {
-  merchantId: string
+interface BranchDashboardProps {
+  branchId: string
+  merchantId?: string
 }
 
-export default function MerchantDashboard({ merchantId }: MerchantDashboardProps) {
+export default function BranchDashboard({ branchId, merchantId }: BranchDashboardProps) {
   const navigate = useNavigate()
   const [dateFilters, setDateFilters] = useState<DateFilters>({})
   const [granularity, setGranularity] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('monthly')
   const [customersMode, setCustomersMode] = useState<'amount' | 'count'>('amount')
-  const [branchesMode, setBranchesMode] = useState<'amount' | 'count'>('amount')
+  const [terminalsMode, setTerminalsMode] = useState<'amount' | 'count'>('amount')
   const [trendMode, setTrendMode] = useState<'amount' | 'count'>('amount')
   const [chartType, setChartType] = useState<'area' | 'bar'>('area')
   const [heatmapMode, setHeatmapMode] = useState<'volume' | 'count' | 'average'>('volume')
   const STATIC_LIMIT = 5
 
-  const { data: merchantStats, isLoading: statsLoading } = useMerchantStats(
-    merchantId,
+  const { data: branchStats, isLoading: statsLoading } = useBranchStats(
+    branchId,
     dateFilters,
-    !!merchantId
+    !!branchId
   )
 
-  const { data: merchantDetails } = useMerchantDetails(merchantId, !!merchantId)
-
-  const clearFilters = () => {
-    setDateFilters({})
-  }
-
-  const clearSingleFilter = (key: keyof DateFilters) => {
-    setDateFilters(prev => {
-      const newFilters = { ...prev }
-      delete newFilters[key]
-      return newFilters
-    })
-  }
-
-  const getFilterDescription = (filters: DateFilters): string => {
-    if (Object.keys(filters).length === 0) {
-      return 'All time'
-    }
-
-    const parts = []
-
-    if (filters.year && filters.month) {
-      const monthName = new Date(2024, filters.month - 1).toLocaleString('default', { month: 'long' })
-      parts.push(`${monthName} ${filters.year}`)
-    } else if (filters.year) {
-      parts.push(`Year ${filters.year}`)
-    } else if (filters.month) {
-      const monthName = new Date(2024, filters.month - 1).toLocaleString('default', { month: 'long' })
-      parts.push(`${monthName} (all years)`)
-    }
-
-    if (filters.range_days) {
-      parts.push(`Last ${filters.range_days} days`)
-    }
-
-    if (filters.start_date && filters.end_date) {
-      parts.push(`${filters.start_date} to ${filters.end_date}`)
-    } else if (filters.start_date) {
-      parts.push(`From ${filters.start_date}`)
-    } else if (filters.end_date) {
-      parts.push(`Until ${filters.end_date}`)
-    }
-
-    if (filters.week) {
-      parts.push(`Week ${filters.week}`)
-    }
-
-    if (filters.day) {
-      parts.push(`Day ${filters.day}`)
-    }
-
-    if (filters.channel) {
-      parts.push(`Channel: ${filters.channel}`)
-    }
-
-    return parts.length > 0 ? parts.join(', ') : 'Filtered period'
-  }
-
-  console.log("Merchant Details: ", merchantDetails)
+  const { data: branchDetails, isLoading: detailsLoading } = useBranchDetails(
+    branchId,
+    !!branchId
+  )
 
   return (
     <>
@@ -130,27 +76,31 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate({ to: '/' })}
+                onClick={() => navigate({ to: merchantId ? `/merchants/${merchantId}` : branchDetails?.merchant_id ? `/merchants/${branchDetails.merchant_id}` : '/' })}
                 className="flex items-center gap-2"
               >
                 <ArrowLeft className="h-4 w-4" />
-                Back to Dashboard
+                Back to Merchant Dashboard
               </Button>
               <div>
                 <h1 className='text-2xl font-bold tracking-tight'>
-                  {merchantDetails?.merchant_name ? (
+                  {branchDetails?.branch_name ? (
                     <>
-                      {merchantDetails.merchant_name}
+                      {branchDetails.branch_name}
                       <span className="text-lg font-normal text-muted-foreground ml-2">
-                        ({merchantId})
+                        ({branchId})
                       </span>
                     </>
                   ) : (
-                    `Merchant ${merchantId}`
+                    `Branch ${branchId}`
                   )}
                 </h1>
                 <p className='text-muted-foreground'>
-                  View analytics and insights for this merchant
+                  {branchDetails?.merchant_name ? (
+                    <>Branch of {branchDetails.merchant_name}</>
+                  ) : (
+                    'View analytics and insights for this branch'
+                  )}
                 </p>
               </div>
             </div>
@@ -158,6 +108,7 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
               <Button>Download</Button>
             </div>
           </div>
+
         {/* Filters Section */}
         <ErrorBoundary>
           <div className='flex gap-4 flex-wrap'>
@@ -165,7 +116,7 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
               <DateFiltersComponent
                 filters={dateFilters}
                 onFiltersChange={setDateFilters}
-                onClear={clearFilters}
+                onClear={() => setDateFilters({})}
               />
             </div>
             <div className='max-w-xs'>
@@ -184,8 +135,11 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
         {/* Filter Summary */}
         <FilterSummary
           dateFilters={dateFilters}
-          onClearFilter={clearSingleFilter}
-          onClearAll={clearFilters}
+          onClearFilter={(key) => {
+            const { [key]: _, ...rest } = dateFilters
+            setDateFilters(rest)
+          }}
+          onClearAll={() => setDateFilters({})}
         />
 
         <div className='space-y-4'>
@@ -204,13 +158,13 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                     </CardContent>
                   </Card>
                 ))
-              ) : merchantStats && merchantStats.length > 0 ? (
-                // Real data - filter to show specific stats: Total Transaction Value, Average Transaction Value, Max Transaction Value, Total Branches
-                merchantStats.filter(stat =>
+              ) : branchStats && branchStats.length > 0 ? (
+                // Real data - filter to show specific stats: Total Transaction Value, Average Transaction Value, Max Transaction Value, Total Terminals
+                branchStats.filter(stat =>
                   stat.metric.includes('Total Transaction Value') ||
                   stat.metric.includes('Average Transaction Value') ||
                   stat.metric.includes('Transaction Count') ||
-                  stat.metric.includes('Total Branches')
+                  stat.metric.includes('Total Terminals')
                 ).map((stat, index) => (
                   <Card key={stat.metric}>
                     <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
@@ -235,8 +189,9 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                         {index === 1 && <circle cx='9' cy='7' r='4' />}
                         {index === 2 && <rect width='20' height='14' x='2' y='5' rx='2' />}
                         {index === 2 && <path d='M2 10h20' />}
-                        {index === 3 && <path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' />}
-                        {index === 3 && <polyline points='9,9 9,13 15,13 15,9' />}
+                        {index === 3 && <rect x='2' y='3' width='20' height='14' rx='2' ry='2' />}
+                        {index === 3 && <line x1='8' y1='21' x2='16' y2='21' />}
+                        {index === 3 && <line x1='12' y1='17' x2='12' y2='21' />}
                       </svg>
                     </CardHeader>
                     <CardContent>
@@ -246,7 +201,7 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                           : stat.value.toLocaleString()}
                       </div>
                       <p className='text-muted-foreground text-xs'>
-                        {getFilterDescription(dateFilters)}
+                        {Object.keys(dateFilters).length === 0 ? 'All time' : 'Filtered period'}
                       </p>
                     </CardContent>
                   </Card>
@@ -257,7 +212,7 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                   <Card key={i}>
                     <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                       <CardTitle className='text-sm font-medium'>
-                        {['Total Revenue', 'Average Transaction', 'Max Transaction', 'Total Branches'][i]}
+                        {['Total Revenue', 'Average Transaction', 'Max Transaction', 'Total Terminals'][i]}
                       </CardTitle>
                       <div className='text-muted-foreground h-4 w-4 opacity-50'>
                         <svg
@@ -272,8 +227,9 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                           {i === 0 && <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />}
                           {i === 1 && <path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' />}
                           {i === 2 && <path d='M22 12h-4l-3 9L9 3l-3 9H2' />}
-                          {i === 3 && <path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' />}
-                          {i === 3 && <polyline points='9,9 9,13 15,13 15,9' />}
+                          {i === 3 && <rect x='2' y='3' width='20' height='14' rx='2' ry='2' />}
+                          {i === 3 && <line x1='8' y1='21' x2='16' y2='21' />}
+                          {i === 3 && <line x1='12' y1='17' x2='12' y2='21' />}
                         </svg>
                       </div>
                     </CardHeader>
@@ -287,6 +243,7 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                 ))
               )}
             </div>
+
             {/* Transaction Volume Chart - Full Width */}
             <Card>
               <CardHeader>
@@ -294,7 +251,7 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                   <div>
                     <CardTitle>Transaction Trend Over Time</CardTitle>
                     <CardDescription>
-                      {granularity.charAt(0).toUpperCase() + granularity.slice(1)} transaction {trendMode === 'amount' ? 'value' : 'volume'} for this merchant
+                      {granularity.charAt(0).toUpperCase() + granularity.slice(1)} transaction {trendMode === 'amount' ? 'value' : 'volume'} for this branch
                     </CardDescription>
                   </div>
                   <div className='flex items-center gap-2 flex-shrink-0'>
@@ -321,8 +278,8 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
               </CardHeader>
               <CardContent className='pl-2'>
                 <ErrorBoundary>
-                  <MerchantOverview
-                    merchantId={merchantId}
+                  <BranchOverview
+                    branchId={branchId}
                     granularity={granularity}
                     dateFilters={dateFilters}
                     mode={trendMode}
@@ -332,7 +289,7 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
               </CardContent>
             </Card>
 
-            {/* Top Customers and Top Branches Row */}
+            {/* Top Customers and Top Terminals Row */}
             <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
               <Card>
                 <CardHeader>
@@ -357,8 +314,8 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                 </CardHeader>
                 <CardContent>
                   <ErrorBoundary>
-                    <MerchantTopCustomers
-                      merchantId={merchantId}
+                    <BranchTopCustomers
+                      branchId={branchId}
                       mode={customersMode}
                       limit={STATIC_LIMIT}
                       dateFilters={dateFilters}
@@ -372,26 +329,26 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                   <div className='flex items-center justify-between'>
                     <div>
                       <CardTitle className="flex items-center gap-3">
-                        Top 5 Branches
+                        Top 5 Terminals
                         <Button
                           variant="outline"
                           size="sm"
                           className="h-6 px-2 text-xs"
-                          onClick={() => navigate({ to: `/merchants/${merchantId}/branches` })}
-                          title="View all branches for this merchant"
+                          onClick={() => navigate({ to: `/branch-admins/${branchId}/terminals` })}
+                          title="View all terminals for this branch"
                         >
-                          <Building2 className="h-3 w-3 mr-1" />
+                          <Monitor className="h-3 w-3 mr-1" />
                           View All
                         </Button>
                       </CardTitle>
                       <CardDescription>
-                        Highest value branches by {branchesMode === 'amount' ? 'transaction amount' : 'transaction count'}
+                        Highest value terminals by {terminalsMode === 'amount' ? 'transaction amount' : 'transaction count'}
                       </CardDescription>
                     </div>
                     <div className='flex-shrink-0'>
                       <TopModeSelector
-                        mode={branchesMode}
-                        onModeChange={setBranchesMode}
+                        mode={terminalsMode}
+                        onModeChange={setTerminalsMode}
                         label="Sort By"
                         className="min-w-[120px]"
                       />
@@ -400,9 +357,9 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                 </CardHeader>
                 <CardContent>
                   <ErrorBoundary>
-                    <MerchantTopBranches
-                      merchantId={merchantId}
-                      mode={branchesMode}
+                    <BranchTopTerminals
+                      branchId={branchId}
+                      mode={terminalsMode}
                       limit={STATIC_LIMIT}
                       dateFilters={dateFilters}
                     />
@@ -411,16 +368,16 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
               </Card>
             </div>
 
-            {/* Branch Activity Heatmap - Full Width */}
+            {/* Terminal Activity Heatmap - Full Width */}
             <Card className="col-span-full">
               <CardHeader>
                 <div className='flex items-center justify-between'>
                   <div>
                     <CardTitle>
-                      Branch Activity - {heatmapMode === 'volume' ? 'Transaction Volume' : heatmapMode === 'count' ? 'Transaction Count' : 'Average Value'}
+                      Terminal Activity - {heatmapMode === 'volume' ? 'Transaction Volume' : heatmapMode === 'count' ? 'Transaction Count' : 'Average Value'}
                     </CardTitle>
                     <CardDescription>
-                      {granularity.charAt(0).toUpperCase() + granularity.slice(1)} branch activity patterns for this merchant
+                      {granularity.charAt(0).toUpperCase() + granularity.slice(1)} terminal activity patterns for this branch
                     </CardDescription>
                   </div>
                   <div className='flex items-center gap-2 flex-shrink-0'>
@@ -441,8 +398,8 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
               </CardHeader>
               <CardContent>
                 <ErrorBoundary>
-                  <MerchantBranchActivityHeatmap
-                    merchantId={merchantId}
+                  <BranchTerminalActivityHeatmap
+                    branchId={branchId}
                     granularity={granularity}
                     dateFilters={dateFilters}
                     mode={heatmapMode}
@@ -452,17 +409,17 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
             </Card>
 
             {/* Transaction Frequency Analysis - Full Width */}
-            <ErrorBoundary>
-              <MerchantTransactionFrequencyAnalysis
-                merchantId={merchantId}
-                dateFilters={dateFilters}
-              />
-            </ErrorBoundary>
+            <div className="col-span-full">
+              <ErrorBoundary>
+                <BranchTransactionFrequencyAnalysis
+                  branchId={branchId}
+                  dateFilters={dateFilters}
+                />
+              </ErrorBoundary>
+            </div>
         </div>
         </ConnectionStatus>
       </Main>
     </>
   )
 }
-
-

@@ -26,7 +26,7 @@ import { ErrorBoundary } from '@/components/error-boundary'
 import { ConnectionStatus } from '@/components/connection-status'
 import { Users, Store } from 'lucide-react'
 import { Overview } from './components/overview'
-import { RecentSales } from './components/recent-sales'
+import { AgentTopCustomers } from './components/agent-top-customers'
 import { TopMerchants } from './components/top-merchants'
 import { MerchantActivityHeatmap } from './components/merchant-activity-heatmap'
 import { TransactionFrequencyAnalysis } from './components/transaction-frequency-analysis'
@@ -349,7 +349,7 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <ErrorBoundary>
-                    <RecentSales
+                    <AgentTopCustomers
                       agentId={selectedAgent}
                       mode={customersMode}
                       limit={STATIC_LIMIT}

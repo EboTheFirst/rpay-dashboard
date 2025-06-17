@@ -25,7 +25,7 @@ export function TopMerchants({
 
   if (isLoading) {
     return (
-      <div className='space-y-8'>
+      <div className='space-y-4'>
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className='flex items-center gap-4'>
             <div className='h-9 w-9 rounded-full bg-muted animate-pulse' />
@@ -63,7 +63,7 @@ export function TopMerchants({
   }
 
   return (
-    <div className='space-y-8'>
+    <div className='space-y-4'>
       {topMerchants.data.map((merchant: any, index: number) => {
         const initials = merchant.merchant_name
           ? merchant.merchant_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)

@@ -29,6 +29,7 @@ import { Route as ClerkauthRouteImport } from './routes/clerk/(auth)/route'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings/route'
 import { Route as AuthenticatedMerchantsRouteImport } from './routes/_authenticated/merchants/route'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers/route'
+import { Route as AuthenticatedBranchAdminsRouteImport } from './routes/_authenticated/branch-admins/route'
 import { Route as AuthenticatedAgentsRouteImport } from './routes/_authenticated/agents/route'
 import { Route as AuthenticatedTargetDiscoveryIndexImport } from './routes/_authenticated/target-discovery/index'
 import { Route as AuthenticatedSettingsIndexImport } from './routes/_authenticated/settings/index'
@@ -43,11 +44,15 @@ import { Route as AuthenticatedSettingsDisplayImport } from './routes/_authentic
 import { Route as AuthenticatedSettingsAppearanceImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedMerchantsMerchantIdImport } from './routes/_authenticated/merchants/$merchantId'
+import { Route as AuthenticatedBranchAdminsBranchIdImport } from './routes/_authenticated/branch-admins/$branchId'
 import { Route as AuthenticatedAgentsAgentIdRouteImport } from './routes/_authenticated/agents/$agentId/route'
 import { Route as AuthenticatedTargetDiscoveryMerchantsIndexImport } from './routes/_authenticated/target-discovery/merchants/index'
 import { Route as AuthenticatedTargetDiscoveryCustomersIndexImport } from './routes/_authenticated/target-discovery/customers/index'
+import { Route as AuthenticatedMerchantsMerchantIdIndexImport } from './routes/_authenticated/merchants/$merchantId/index'
 import { Route as AuthenticatedTargetDiscoveryMerchantsSearchImport } from './routes/_authenticated/target-discovery/merchants/search'
 import { Route as AuthenticatedTargetDiscoveryCustomersSearchImport } from './routes/_authenticated/target-discovery/customers/search'
+import { Route as AuthenticatedMerchantsMerchantIdBranchesImport } from './routes/_authenticated/merchants/$merchantId/branches'
+import { Route as AuthenticatedMerchantsMerchantIdBranchIdImport } from './routes/_authenticated/merchants/$merchantId/$branchId'
 
 // Create/Update Routes
 
@@ -160,6 +165,13 @@ const AuthenticatedCustomersRouteRoute =
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
+const AuthenticatedBranchAdminsRouteRoute =
+  AuthenticatedBranchAdminsRouteImport.update({
+    id: '/branch-admins',
+    path: '/branch-admins',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
 const AuthenticatedAgentsRouteRoute = AuthenticatedAgentsRouteImport.update({
   id: '/agents',
   path: '/agents',
@@ -256,6 +268,13 @@ const AuthenticatedMerchantsMerchantIdRoute =
     getParentRoute: () => AuthenticatedMerchantsRouteRoute,
   } as any)
 
+const AuthenticatedBranchAdminsBranchIdRoute =
+  AuthenticatedBranchAdminsBranchIdImport.update({
+    id: '/$branchId',
+    path: '/$branchId',
+    getParentRoute: () => AuthenticatedBranchAdminsRouteRoute,
+  } as any)
+
 const AuthenticatedAgentsAgentIdRouteRoute =
   AuthenticatedAgentsAgentIdRouteImport.update({
     id: '/$agentId',
@@ -277,6 +296,13 @@ const AuthenticatedTargetDiscoveryCustomersIndexRoute =
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
+const AuthenticatedMerchantsMerchantIdIndexRoute =
+  AuthenticatedMerchantsMerchantIdIndexImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedMerchantsMerchantIdRoute,
+  } as any)
+
 const AuthenticatedTargetDiscoveryMerchantsSearchRoute =
   AuthenticatedTargetDiscoveryMerchantsSearchImport.update({
     id: '/target-discovery/merchants/search',
@@ -289,6 +315,20 @@ const AuthenticatedTargetDiscoveryCustomersSearchRoute =
     id: '/target-discovery/customers/search',
     path: '/target-discovery/customers/search',
     getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
+const AuthenticatedMerchantsMerchantIdBranchesRoute =
+  AuthenticatedMerchantsMerchantIdBranchesImport.update({
+    id: '/branches',
+    path: '/branches',
+    getParentRoute: () => AuthenticatedMerchantsMerchantIdRoute,
+  } as any)
+
+const AuthenticatedMerchantsMerchantIdBranchIdRoute =
+  AuthenticatedMerchantsMerchantIdBranchIdImport.update({
+    id: '/$branchId',
+    path: '/$branchId',
+    getParentRoute: () => AuthenticatedMerchantsMerchantIdRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -314,6 +354,13 @@ declare module '@tanstack/react-router' {
       path: '/agents'
       fullPath: '/agents'
       preLoaderRoute: typeof AuthenticatedAgentsRouteImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/branch-admins': {
+      id: '/_authenticated/branch-admins'
+      path: '/branch-admins'
+      fullPath: '/branch-admins'
+      preLoaderRoute: typeof AuthenticatedBranchAdminsRouteImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/customers': {
@@ -435,6 +482,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgentsAgentIdRouteImport
       parentRoute: typeof AuthenticatedAgentsRouteImport
     }
+    '/_authenticated/branch-admins/$branchId': {
+      id: '/_authenticated/branch-admins/$branchId'
+      path: '/$branchId'
+      fullPath: '/branch-admins/$branchId'
+      preLoaderRoute: typeof AuthenticatedBranchAdminsBranchIdImport
+      parentRoute: typeof AuthenticatedBranchAdminsRouteImport
+    }
     '/_authenticated/merchants/$merchantId': {
       id: '/_authenticated/merchants/$merchantId'
       path: '/$merchantId'
@@ -526,6 +580,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTargetDiscoveryIndexImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/merchants/$merchantId/$branchId': {
+      id: '/_authenticated/merchants/$merchantId/$branchId'
+      path: '/$branchId'
+      fullPath: '/merchants/$merchantId/$branchId'
+      preLoaderRoute: typeof AuthenticatedMerchantsMerchantIdBranchIdImport
+      parentRoute: typeof AuthenticatedMerchantsMerchantIdImport
+    }
+    '/_authenticated/merchants/$merchantId/branches': {
+      id: '/_authenticated/merchants/$merchantId/branches'
+      path: '/branches'
+      fullPath: '/merchants/$merchantId/branches'
+      preLoaderRoute: typeof AuthenticatedMerchantsMerchantIdBranchesImport
+      parentRoute: typeof AuthenticatedMerchantsMerchantIdImport
+    }
     '/_authenticated/target-discovery/customers/search': {
       id: '/_authenticated/target-discovery/customers/search'
       path: '/target-discovery/customers/search'
@@ -539,6 +607,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/target-discovery/merchants/search'
       preLoaderRoute: typeof AuthenticatedTargetDiscoveryMerchantsSearchImport
       parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/merchants/$merchantId/': {
+      id: '/_authenticated/merchants/$merchantId/'
+      path: '/'
+      fullPath: '/merchants/$merchantId/'
+      preLoaderRoute: typeof AuthenticatedMerchantsMerchantIdIndexImport
+      parentRoute: typeof AuthenticatedMerchantsMerchantIdImport
     }
     '/_authenticated/target-discovery/customers/': {
       id: '/_authenticated/target-discovery/customers/'
@@ -573,6 +648,21 @@ const AuthenticatedAgentsRouteRouteWithChildren =
     AuthenticatedAgentsRouteRouteChildren,
   )
 
+interface AuthenticatedBranchAdminsRouteRouteChildren {
+  AuthenticatedBranchAdminsBranchIdRoute: typeof AuthenticatedBranchAdminsBranchIdRoute
+}
+
+const AuthenticatedBranchAdminsRouteRouteChildren: AuthenticatedBranchAdminsRouteRouteChildren =
+  {
+    AuthenticatedBranchAdminsBranchIdRoute:
+      AuthenticatedBranchAdminsBranchIdRoute,
+  }
+
+const AuthenticatedBranchAdminsRouteRouteWithChildren =
+  AuthenticatedBranchAdminsRouteRoute._addFileChildren(
+    AuthenticatedBranchAdminsRouteRouteChildren,
+  )
+
 interface AuthenticatedCustomersRouteRouteChildren {
   AuthenticatedCustomersIndexRoute: typeof AuthenticatedCustomersIndexRoute
 }
@@ -587,15 +677,36 @@ const AuthenticatedCustomersRouteRouteWithChildren =
     AuthenticatedCustomersRouteRouteChildren,
   )
 
+interface AuthenticatedMerchantsMerchantIdRouteChildren {
+  AuthenticatedMerchantsMerchantIdBranchIdRoute: typeof AuthenticatedMerchantsMerchantIdBranchIdRoute
+  AuthenticatedMerchantsMerchantIdBranchesRoute: typeof AuthenticatedMerchantsMerchantIdBranchesRoute
+  AuthenticatedMerchantsMerchantIdIndexRoute: typeof AuthenticatedMerchantsMerchantIdIndexRoute
+}
+
+const AuthenticatedMerchantsMerchantIdRouteChildren: AuthenticatedMerchantsMerchantIdRouteChildren =
+  {
+    AuthenticatedMerchantsMerchantIdBranchIdRoute:
+      AuthenticatedMerchantsMerchantIdBranchIdRoute,
+    AuthenticatedMerchantsMerchantIdBranchesRoute:
+      AuthenticatedMerchantsMerchantIdBranchesRoute,
+    AuthenticatedMerchantsMerchantIdIndexRoute:
+      AuthenticatedMerchantsMerchantIdIndexRoute,
+  }
+
+const AuthenticatedMerchantsMerchantIdRouteWithChildren =
+  AuthenticatedMerchantsMerchantIdRoute._addFileChildren(
+    AuthenticatedMerchantsMerchantIdRouteChildren,
+  )
+
 interface AuthenticatedMerchantsRouteRouteChildren {
-  AuthenticatedMerchantsMerchantIdRoute: typeof AuthenticatedMerchantsMerchantIdRoute
+  AuthenticatedMerchantsMerchantIdRoute: typeof AuthenticatedMerchantsMerchantIdRouteWithChildren
   AuthenticatedMerchantsIndexRoute: typeof AuthenticatedMerchantsIndexRoute
 }
 
 const AuthenticatedMerchantsRouteRouteChildren: AuthenticatedMerchantsRouteRouteChildren =
   {
     AuthenticatedMerchantsMerchantIdRoute:
-      AuthenticatedMerchantsMerchantIdRoute,
+      AuthenticatedMerchantsMerchantIdRouteWithChildren,
     AuthenticatedMerchantsIndexRoute: AuthenticatedMerchantsIndexRoute,
   }
 
@@ -629,6 +740,7 @@ const AuthenticatedSettingsRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAgentsRouteRoute: typeof AuthenticatedAgentsRouteRouteWithChildren
+  AuthenticatedBranchAdminsRouteRoute: typeof AuthenticatedBranchAdminsRouteRouteWithChildren
   AuthenticatedCustomersRouteRoute: typeof AuthenticatedCustomersRouteRouteWithChildren
   AuthenticatedMerchantsRouteRoute: typeof AuthenticatedMerchantsRouteRouteWithChildren
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
@@ -643,6 +755,8 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAgentsRouteRoute: AuthenticatedAgentsRouteRouteWithChildren,
+  AuthenticatedBranchAdminsRouteRoute:
+    AuthenticatedBranchAdminsRouteRouteWithChildren,
   AuthenticatedCustomersRouteRoute:
     AuthenticatedCustomersRouteRouteWithChildren,
   AuthenticatedMerchantsRouteRoute:
@@ -712,6 +826,7 @@ export interface FileRoutesByFullPath {
   '': typeof AuthenticatedRouteRouteWithChildren
   '/clerk': typeof ClerkAuthenticatedRouteRouteWithChildren
   '/agents': typeof AuthenticatedAgentsRouteRouteWithChildren
+  '/branch-admins': typeof AuthenticatedBranchAdminsRouteRouteWithChildren
   '/customers': typeof AuthenticatedCustomersRouteRouteWithChildren
   '/merchants': typeof AuthenticatedMerchantsRouteRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
@@ -728,7 +843,8 @@ export interface FileRoutesByFullPath {
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
   '/agents/$agentId': typeof AuthenticatedAgentsAgentIdRouteRoute
-  '/merchants/$merchantId': typeof AuthenticatedMerchantsMerchantIdRoute
+  '/branch-admins/$branchId': typeof AuthenticatedBranchAdminsBranchIdRoute
+  '/merchants/$merchantId': typeof AuthenticatedMerchantsMerchantIdRouteWithChildren
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -741,14 +857,18 @@ export interface FileRoutesByFullPath {
   '/merchants/': typeof AuthenticatedMerchantsIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/target-discovery': typeof AuthenticatedTargetDiscoveryIndexRoute
+  '/merchants/$merchantId/$branchId': typeof AuthenticatedMerchantsMerchantIdBranchIdRoute
+  '/merchants/$merchantId/branches': typeof AuthenticatedMerchantsMerchantIdBranchesRoute
   '/target-discovery/customers/search': typeof AuthenticatedTargetDiscoveryCustomersSearchRoute
   '/target-discovery/merchants/search': typeof AuthenticatedTargetDiscoveryMerchantsSearchRoute
+  '/merchants/$merchantId/': typeof AuthenticatedMerchantsMerchantIdIndexRoute
   '/target-discovery/customers': typeof AuthenticatedTargetDiscoveryCustomersIndexRoute
   '/target-discovery/merchants': typeof AuthenticatedTargetDiscoveryMerchantsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/agents': typeof AuthenticatedAgentsRouteRouteWithChildren
+  '/branch-admins': typeof AuthenticatedBranchAdminsRouteRouteWithChildren
   '/clerk': typeof ClerkAuthenticatedRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
   '/otp': typeof authOtpRoute
@@ -762,7 +882,7 @@ export interface FileRoutesByTo {
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
   '/agents/$agentId': typeof AuthenticatedAgentsAgentIdRouteRoute
-  '/merchants/$merchantId': typeof AuthenticatedMerchantsMerchantIdRoute
+  '/branch-admins/$branchId': typeof AuthenticatedBranchAdminsBranchIdRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -775,8 +895,11 @@ export interface FileRoutesByTo {
   '/merchants': typeof AuthenticatedMerchantsIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/target-discovery': typeof AuthenticatedTargetDiscoveryIndexRoute
+  '/merchants/$merchantId/$branchId': typeof AuthenticatedMerchantsMerchantIdBranchIdRoute
+  '/merchants/$merchantId/branches': typeof AuthenticatedMerchantsMerchantIdBranchesRoute
   '/target-discovery/customers/search': typeof AuthenticatedTargetDiscoveryCustomersSearchRoute
   '/target-discovery/merchants/search': typeof AuthenticatedTargetDiscoveryMerchantsSearchRoute
+  '/merchants/$merchantId': typeof AuthenticatedMerchantsMerchantIdIndexRoute
   '/target-discovery/customers': typeof AuthenticatedTargetDiscoveryCustomersIndexRoute
   '/target-discovery/merchants': typeof AuthenticatedTargetDiscoveryMerchantsIndexRoute
 }
@@ -786,6 +909,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/clerk': typeof ClerkRouteRouteWithChildren
   '/_authenticated/agents': typeof AuthenticatedAgentsRouteRouteWithChildren
+  '/_authenticated/branch-admins': typeof AuthenticatedBranchAdminsRouteRouteWithChildren
   '/_authenticated/customers': typeof AuthenticatedCustomersRouteRouteWithChildren
   '/_authenticated/merchants': typeof AuthenticatedMerchantsRouteRouteWithChildren
   '/_authenticated/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
@@ -803,7 +927,8 @@ export interface FileRoutesById {
   '/(errors)/503': typeof errors503Route
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/agents/$agentId': typeof AuthenticatedAgentsAgentIdRouteRoute
-  '/_authenticated/merchants/$merchantId': typeof AuthenticatedMerchantsMerchantIdRoute
+  '/_authenticated/branch-admins/$branchId': typeof AuthenticatedBranchAdminsBranchIdRoute
+  '/_authenticated/merchants/$merchantId': typeof AuthenticatedMerchantsMerchantIdRouteWithChildren
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
@@ -816,8 +941,11 @@ export interface FileRoutesById {
   '/_authenticated/merchants/': typeof AuthenticatedMerchantsIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/target-discovery/': typeof AuthenticatedTargetDiscoveryIndexRoute
+  '/_authenticated/merchants/$merchantId/$branchId': typeof AuthenticatedMerchantsMerchantIdBranchIdRoute
+  '/_authenticated/merchants/$merchantId/branches': typeof AuthenticatedMerchantsMerchantIdBranchesRoute
   '/_authenticated/target-discovery/customers/search': typeof AuthenticatedTargetDiscoveryCustomersSearchRoute
   '/_authenticated/target-discovery/merchants/search': typeof AuthenticatedTargetDiscoveryMerchantsSearchRoute
+  '/_authenticated/merchants/$merchantId/': typeof AuthenticatedMerchantsMerchantIdIndexRoute
   '/_authenticated/target-discovery/customers/': typeof AuthenticatedTargetDiscoveryCustomersIndexRoute
   '/_authenticated/target-discovery/merchants/': typeof AuthenticatedTargetDiscoveryMerchantsIndexRoute
 }
@@ -828,6 +956,7 @@ export interface FileRouteTypes {
     | ''
     | '/clerk'
     | '/agents'
+    | '/branch-admins'
     | '/customers'
     | '/merchants'
     | '/settings'
@@ -844,6 +973,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/'
     | '/agents/$agentId'
+    | '/branch-admins/$branchId'
     | '/merchants/$merchantId'
     | '/settings/account'
     | '/settings/appearance'
@@ -857,13 +987,17 @@ export interface FileRouteTypes {
     | '/merchants/'
     | '/settings/'
     | '/target-discovery'
+    | '/merchants/$merchantId/$branchId'
+    | '/merchants/$merchantId/branches'
     | '/target-discovery/customers/search'
     | '/target-discovery/merchants/search'
+    | '/merchants/$merchantId/'
     | '/target-discovery/customers'
     | '/target-discovery/merchants'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/agents'
+    | '/branch-admins'
     | '/clerk'
     | '/forgot-password'
     | '/otp'
@@ -877,7 +1011,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/'
     | '/agents/$agentId'
-    | '/merchants/$merchantId'
+    | '/branch-admins/$branchId'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
@@ -890,8 +1024,11 @@ export interface FileRouteTypes {
     | '/merchants'
     | '/settings'
     | '/target-discovery'
+    | '/merchants/$merchantId/$branchId'
+    | '/merchants/$merchantId/branches'
     | '/target-discovery/customers/search'
     | '/target-discovery/merchants/search'
+    | '/merchants/$merchantId'
     | '/target-discovery/customers'
     | '/target-discovery/merchants'
   id:
@@ -899,6 +1036,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/clerk'
     | '/_authenticated/agents'
+    | '/_authenticated/branch-admins'
     | '/_authenticated/customers'
     | '/_authenticated/merchants'
     | '/_authenticated/settings'
@@ -916,6 +1054,7 @@ export interface FileRouteTypes {
     | '/(errors)/503'
     | '/_authenticated/'
     | '/_authenticated/agents/$agentId'
+    | '/_authenticated/branch-admins/$branchId'
     | '/_authenticated/merchants/$merchantId'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
@@ -929,8 +1068,11 @@ export interface FileRouteTypes {
     | '/_authenticated/merchants/'
     | '/_authenticated/settings/'
     | '/_authenticated/target-discovery/'
+    | '/_authenticated/merchants/$merchantId/$branchId'
+    | '/_authenticated/merchants/$merchantId/branches'
     | '/_authenticated/target-discovery/customers/search'
     | '/_authenticated/target-discovery/merchants/search'
+    | '/_authenticated/merchants/$merchantId/'
     | '/_authenticated/target-discovery/customers/'
     | '/_authenticated/target-discovery/merchants/'
   fileRoutesById: FileRoutesById
@@ -994,6 +1136,7 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/route.tsx",
       "children": [
         "/_authenticated/agents",
+        "/_authenticated/branch-admins",
         "/_authenticated/customers",
         "/_authenticated/merchants",
         "/_authenticated/settings",
@@ -1018,6 +1161,13 @@ export const routeTree = rootRoute
       "parent": "/_authenticated",
       "children": [
         "/_authenticated/agents/$agentId"
+      ]
+    },
+    "/_authenticated/branch-admins": {
+      "filePath": "_authenticated/branch-admins/route.tsx",
+      "parent": "/_authenticated",
+      "children": [
+        "/_authenticated/branch-admins/$branchId"
       ]
     },
     "/_authenticated/customers": {
@@ -1099,9 +1249,18 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/agents/$agentId/route.tsx",
       "parent": "/_authenticated/agents"
     },
+    "/_authenticated/branch-admins/$branchId": {
+      "filePath": "_authenticated/branch-admins/$branchId.tsx",
+      "parent": "/_authenticated/branch-admins"
+    },
     "/_authenticated/merchants/$merchantId": {
       "filePath": "_authenticated/merchants/$merchantId.tsx",
-      "parent": "/_authenticated/merchants"
+      "parent": "/_authenticated/merchants",
+      "children": [
+        "/_authenticated/merchants/$merchantId/$branchId",
+        "/_authenticated/merchants/$merchantId/branches",
+        "/_authenticated/merchants/$merchantId/"
+      ]
     },
     "/_authenticated/settings/account": {
       "filePath": "_authenticated/settings/account.tsx",
@@ -1151,6 +1310,14 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/target-discovery/index.tsx",
       "parent": "/_authenticated"
     },
+    "/_authenticated/merchants/$merchantId/$branchId": {
+      "filePath": "_authenticated/merchants/$merchantId/$branchId.tsx",
+      "parent": "/_authenticated/merchants/$merchantId"
+    },
+    "/_authenticated/merchants/$merchantId/branches": {
+      "filePath": "_authenticated/merchants/$merchantId/branches.tsx",
+      "parent": "/_authenticated/merchants/$merchantId"
+    },
     "/_authenticated/target-discovery/customers/search": {
       "filePath": "_authenticated/target-discovery/customers/search.tsx",
       "parent": "/_authenticated"
@@ -1158,6 +1325,10 @@ export const routeTree = rootRoute
     "/_authenticated/target-discovery/merchants/search": {
       "filePath": "_authenticated/target-discovery/merchants/search.tsx",
       "parent": "/_authenticated"
+    },
+    "/_authenticated/merchants/$merchantId/": {
+      "filePath": "_authenticated/merchants/$merchantId/index.tsx",
+      "parent": "/_authenticated/merchants/$merchantId"
     },
     "/_authenticated/target-discovery/customers/": {
       "filePath": "_authenticated/target-discovery/customers/index.tsx",

@@ -272,6 +272,20 @@ export const useMerchantBranchActivityHeatmap = (
   })
 }
 
+// Hook to get list of all branches
+export const useBranchList = () => {
+  return useQuery<Array<{ branch_admin_id: string; branch_name: string }>>({
+    queryKey: ['branch-list'],
+    queryFn: async () => {
+      const response = await fetch(`${API_BASE_URL}/branch-admins/list`)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch branches: ${response.statusText}`)
+      }
+      return response.json()
+    },
+  })
+}
+
 // Get terminal activity heatmap for a branch
 export const useBranchTerminalActivityHeatmap = (
   branchId: string,

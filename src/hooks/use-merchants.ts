@@ -215,3 +215,17 @@ export const useMerchantDetails = (merchantId: string, enabled: boolean = true) 
     enabled: enabled && !!merchantId,
   })
 }
+
+// Hook to get list of all merchants
+export const useMerchantList = () => {
+  return useQuery<Array<{ merchant_id: string; merchant_name: string }>>({
+    queryKey: ['merchant-list'],
+    queryFn: async () => {
+      const response = await fetch(`${API_BASE_URL}/merchants/list`)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch merchants: ${response.statusText}`)
+      }
+      return response.json()
+    },
+  })
+}

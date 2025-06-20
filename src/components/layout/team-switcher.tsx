@@ -15,6 +15,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { useTeam, type TeamType } from '@/context/team-context'
 
 export function TeamSwitcher({
   teams,
@@ -26,7 +27,9 @@ export function TeamSwitcher({
   }[]
 }) {
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+  const { selectedTeam, setSelectedTeam } = useTeam()
+
+  const activeTeam = teams.find(team => team.name === selectedTeam) || teams[0]
 
   return (
     <SidebarMenu>
@@ -62,7 +65,7 @@ export function TeamSwitcher({
             {teams.map((team, index) => (
               <DropdownMenuItem
                 key={team.name}
-                onClick={() => setActiveTeam(team)}
+                onClick={() => setSelectedTeam(team.name as TeamType)}
                 className='gap-2 p-2'
               >
                 <team.logo

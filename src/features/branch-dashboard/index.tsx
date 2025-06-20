@@ -21,7 +21,7 @@ import { FilterSummary } from '@/components/filter-summary'
 import { FilterIndicator } from '@/components/filter-indicator'
 import { ErrorBoundary } from '@/components/error-boundary'
 import { ConnectionStatus } from '@/components/connection-status'
-import { ArrowLeft, Monitor, Building2 } from 'lucide-react'
+import { ArrowLeft, Monitor } from 'lucide-react'
 import { BranchOverview } from './components/branch-overview'
 import { BranchTopCustomers } from './components/branch-top-customers'
 import { BranchTopTerminals } from './components/branch-top-terminals'
@@ -30,6 +30,7 @@ import { BranchTransactionFrequencyAnalysis } from './components/branch-transact
 import { useBranchStats, useBranchDetails } from '@/hooks/use-branches'
 import type { DateFilters } from '@/types/api'
 import { useNavigate } from '@tanstack/react-router'
+import { useTeam } from '@/context/team-context'
 
 interface BranchDashboardProps {
   branchId: string
@@ -38,6 +39,7 @@ interface BranchDashboardProps {
 
 export default function BranchDashboard({ branchId, merchantId }: BranchDashboardProps) {
   const navigate = useNavigate()
+  const { navigationContext, selectedTeam } = useTeam()
   const [dateFilters, setDateFilters] = useState<DateFilters>({})
   const [granularity, setGranularity] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('monthly')
   const [customersMode, setCustomersMode] = useState<'amount' | 'count'>('amount')
@@ -46,6 +48,10 @@ export default function BranchDashboard({ branchId, merchantId }: BranchDashboar
   const [chartType, setChartType] = useState<'area' | 'bar'>('area')
   const [heatmapMode, setHeatmapMode] = useState<'volume' | 'count' | 'average'>('volume')
   const STATIC_LIMIT = 5
+
+  // Determine if back button should be shown
+  // Show back button only for hierarchical navigation or when not in RPAY Branch team context
+  const shouldShowBackButton = navigationContext === 'hierarchical' || selectedTeam !== 'RPAY Branch'
 
   const { data: branchStats, isLoading: statsLoading } = useBranchStats(
     branchId,
@@ -73,15 +79,17 @@ export default function BranchDashboard({ branchId, merchantId }: BranchDashboar
         <ConnectionStatus>
           <div className='mb-2 flex items-center justify-between space-y-2'>
             <div className="space-y-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate({ to: merchantId ? `/merchants/${merchantId}` : branchDetails?.merchant_id ? `/merchants/${branchDetails.merchant_id}` : '/' })}
-                className="flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Merchant Dashboard
-              </Button>
+              {shouldShowBackButton && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate({ to: merchantId ? `/merchants/${merchantId}` : branchDetails?.merchant_id ? `/merchants/${branchDetails.merchant_id}` : '/' })}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to Merchant Dashboard
+                </Button>
+              )}
               <div>
                 <h1 className='text-2xl font-bold tracking-tight'>
                   {branchDetails?.branch_name ? (
@@ -334,7 +342,7 @@ export default function BranchDashboard({ branchId, merchantId }: BranchDashboar
                           variant="outline"
                           size="sm"
                           className="h-6 px-2 text-xs"
-                          onClick={() => navigate({ to: `/branch-admins/${branchId}/terminals` })}
+                          onClick={() => navigate({ to: `/branches/${branchId}/terminals` })}
                           title="View all terminals for this branch"
                         >
                           <Monitor className="h-3 w-3 mr-1" />
@@ -359,6 +367,7 @@ export default function BranchDashboard({ branchId, merchantId }: BranchDashboar
                   <ErrorBoundary>
                     <BranchTopTerminals
                       branchId={branchId}
+                      merchantId={branchDetails?.merchant_id}
                       mode={terminalsMode}
                       limit={STATIC_LIMIT}
                       dateFilters={dateFilters}

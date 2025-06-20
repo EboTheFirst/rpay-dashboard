@@ -163,6 +163,42 @@
   background-color: oklch(0.98 0.01 240) !important;
 }
 
+/* Merchant selector styling to match agent selector */
+.transflow-light .merchant-selector-button {
+  color: oklch(0.15 0.08 240) !important; /* Dark blue text for visibility */
+  background-color: oklch(1 0 0) !important; /* White background */
+  border-color: oklch(0.85 0.02 240) !important; /* Light border */
+}
+
+.transflow-light .merchant-selector-button:hover {
+  color: oklch(0.15 0.08 240) !important; /* Maintain dark text on hover */
+  background-color: oklch(0.95 0.01 240) !important; /* Light blue hover background */
+  border-color: oklch(0.35 0.15 240) !important; /* Darker border on hover */
+}
+
+.transflow-light .merchant-selector-button:disabled {
+  color: oklch(0.4 0.1 240) !important; /* Slightly lighter when disabled but still visible */
+  background-color: oklch(0.98 0.01 240) !important;
+}
+
+/* Branch selector styling to match agent selector */
+.transflow-light .branch-selector-button {
+  color: oklch(0.15 0.08 240) !important; /* Dark blue text for visibility */
+  background-color: oklch(1 0 0) !important; /* White background */
+  border-color: oklch(0.85 0.02 240) !important; /* Light border */
+}
+
+.transflow-light .branch-selector-button:hover {
+  color: oklch(0.15 0.08 240) !important; /* Maintain dark text on hover */
+  background-color: oklch(0.95 0.01 240) !important; /* Light blue hover background */
+  border-color: oklch(0.35 0.15 240) !important; /* Darker border on hover */
+}
+
+.transflow-light .branch-selector-button:disabled {
+  color: oklch(0.4 0.1 240) !important; /* Slightly lighter when disabled but still visible */
+  background-color: oklch(0.98 0.01 240) !important;
+}
+
 .transflow-dark {
   --background: oklch(0.08 0.02 240); /* Very dark blue background */
   --foreground: oklch(0.92 0.02 240); /* Light blue-tinted text */

@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Building2, ExternalLink } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
+import { useTeam } from '@/context/team-context'
 
 interface MerchantTopBranchesProps {
   merchantId: string
@@ -12,14 +13,15 @@ interface MerchantTopBranchesProps {
   dateFilters: DateFilters
 }
 
-export function MerchantTopBranches({ 
-  merchantId, 
-  mode, 
-  limit, 
-  dateFilters 
+export function MerchantTopBranches({
+  merchantId,
+  mode,
+  limit,
+  dateFilters
 }: MerchantTopBranchesProps) {
   const navigate = useNavigate()
-  
+  const { setNavigationContext } = useTeam()
+
   const { data: branchesData, isLoading, error } = useMerchantTopBranches(
     merchantId,
     mode,
@@ -75,6 +77,8 @@ export function MerchantTopBranches({
   }
 
   const handleBranchClick = (branchId: string) => {
+    // Set navigation context to 'hierarchical' since this is parent-child navigation
+    setNavigationContext('hierarchical')
     navigate({
       to: `/merchants/${merchantId}/${branchId}`,
       search: { from: 'merchant-dashboard' }

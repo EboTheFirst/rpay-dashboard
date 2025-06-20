@@ -30,6 +30,7 @@ import { MerchantTransactionFrequencyAnalysis } from './components/merchant-tran
 import { useMerchantStats, useMerchantDetails } from '@/hooks/use-merchants'
 import type { DateFilters } from '@/types/api'
 import { useNavigate } from '@tanstack/react-router'
+import { useTeam } from '@/context/team-context'
 
 interface MerchantDashboardProps {
   merchantId: string
@@ -37,6 +38,7 @@ interface MerchantDashboardProps {
 
 export default function MerchantDashboard({ merchantId }: MerchantDashboardProps) {
   const navigate = useNavigate()
+  const { navigationContext, selectedTeam, setNavigationContext } = useTeam()
   const [dateFilters, setDateFilters] = useState<DateFilters>({})
   const [granularity, setGranularity] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('monthly')
   const [customersMode, setCustomersMode] = useState<'amount' | 'count'>('amount')
@@ -45,6 +47,16 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
   const [chartType, setChartType] = useState<'area' | 'bar'>('area')
   const [heatmapMode, setHeatmapMode] = useState<'volume' | 'count' | 'average'>('volume')
   const STATIC_LIMIT = 5
+
+  // Determine if back button should be shown
+  // Show back button only for hierarchical navigation or when not in RPAY Merchant team context
+  const shouldShowBackButton = navigationContext === 'hierarchical' || selectedTeam !== 'RPAY Merchant'
+
+  const handleViewAllBranches = () => {
+    // Set navigation context to 'hierarchical' since this is parent-child navigation
+    setNavigationContext('hierarchical')
+    navigate({ to: `/merchants/${merchantId}/branches` })
+  }
 
   const { data: merchantStats, isLoading: statsLoading } = useMerchantStats(
     merchantId,
@@ -127,15 +139,17 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
         <ConnectionStatus>
           <div className='mb-2 flex items-center justify-between space-y-2'>
             <div className="space-y-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate({ to: '/' })}
-                className="flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Dashboard
-              </Button>
+              {shouldShowBackButton && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate({ to: '/' })}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to Dashboard
+                </Button>
+              )}
               <div>
                 <h1 className='text-2xl font-bold tracking-tight'>
                   {merchantDetails?.merchant_name ? (
@@ -377,7 +391,7 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                           variant="outline"
                           size="sm"
                           className="h-6 px-2 text-xs"
-                          onClick={() => navigate({ to: `/merchants/${merchantId}/branches` })}
+                          onClick={handleViewAllBranches}
                           title="View all branches for this merchant"
                         >
                           <Building2 className="h-3 w-3 mr-1" />

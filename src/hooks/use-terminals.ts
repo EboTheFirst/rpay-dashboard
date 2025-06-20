@@ -35,14 +35,16 @@ const buildQueryParams = (
   granularity?: string,
   topMode?: string,
   topLimit?: number,
-  dateFilters?: DateFilters
+  dateFilters?: DateFilters,
+  channel?: string
 ) => {
   const params = new URLSearchParams()
-  
+
   if (granularity) params.append('granularity', granularity)
   if (topMode) params.append('top_mode', topMode)
   if (topLimit) params.append('top_limit', topLimit.toString())
-  
+  if (channel) params.append('channel', channel)
+
   // Add date filters
   if (dateFilters) {
     Object.entries(dateFilters).forEach(([key, value]) => {
@@ -51,7 +53,7 @@ const buildQueryParams = (
       }
     })
   }
-  
+
   return params.toString()
 }
 
@@ -63,7 +65,7 @@ export const useBranchTerminals = (
   return useQuery<TerminalDetails[]>({
     queryKey: ['branch-terminals', branchId],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/branches/${branchId}/terminals`)
+      const response = await fetch(`${API_BASE_URL}/branch-admins/${branchId}/terminals`)
       if (!response.ok) {
         throw new Error(`Failed to fetch branch terminals: ${response.statusText}`)
       }
@@ -76,13 +78,14 @@ export const useBranchTerminals = (
 // Get terminal statistics
 export const useTerminalStats = (
   terminalId: string,
-  dateFilters: DateFilters = {},
+  filters: DateFilters & { channel?: string } = {},
   enabled: boolean = true
 ) => {
   return useQuery<TerminalStat[]>({
-    queryKey: ['terminal-stats', terminalId, dateFilters],
+    queryKey: ['terminal-stats', terminalId, filters],
     queryFn: async () => {
-      const params = buildQueryParams(undefined, undefined, undefined, dateFilters)
+      const { channel, ...dateFilters } = filters
+      const params = buildQueryParams(undefined, undefined, undefined, dateFilters, channel)
       const url = `${API_BASE_URL}/terminals/${terminalId}/stats${params ? `?${params}` : ''}`
 
       const response = await fetch(url)
@@ -169,15 +172,14 @@ export const useTerminalTransactionCount = (
 // Get top customers for a terminal
 export const useTerminalTopCustomers = (
   terminalId: string,
-  mode: string = 'amount',
-  limit: number = 10,
-  dateFilters: DateFilters = {},
+  filters: DateFilters & { mode?: string; limit?: number; channel?: string } = {},
   enabled: boolean = true
 ) => {
   return useQuery<TableData>({
-    queryKey: ['terminal-top-customers', terminalId, mode, limit, dateFilters],
+    queryKey: ['terminal-top-customers', terminalId, filters],
     queryFn: async () => {
-      const params = buildQueryParams(undefined, undefined, undefined, dateFilters)
+      const { mode = 'amount', limit = 10, channel, ...dateFilters } = filters
+      const params = buildQueryParams(undefined, undefined, undefined, dateFilters, channel)
       const url = `${API_BASE_URL}/terminals/${terminalId}/top-customers?mode=${mode}&limit=${limit}${params ? `&${params}` : ''}`
 
       const response = await fetch(url)
@@ -208,14 +210,15 @@ export const useTerminalDetails = (terminalId: string, enabled: boolean = true) 
 // Get terminal transaction frequency analysis
 export const useTerminalTransactionFrequencyAnalysis = (
   terminalId: string,
-  dateFilters: DateFilters = {},
+  filters: DateFilters & { channel?: string } = {},
   enabled: boolean = true
 ) => {
   return useQuery<TableData>({
-    queryKey: ['terminal-transaction-frequency', terminalId, dateFilters],
+    queryKey: ['terminal-transaction-frequency', terminalId, filters],
     queryFn: async () => {
-      const params = buildQueryParams(undefined, undefined, undefined, dateFilters)
-      const url = `${API_BASE_URL}/terminals/${terminalId}/transaction-frequency${params ? `?${params}` : ''}`
+      const { channel, ...dateFilters } = filters
+      const params = buildQueryParams(undefined, undefined, undefined, dateFilters, channel)
+      const url = `${API_BASE_URL}/terminals/${terminalId}/transaction-frequency-analysis${params ? `?${params}` : ''}`
 
       const response = await fetch(url)
       if (!response.ok) {

@@ -2,7 +2,7 @@ import { createFileRoute, useParams } from '@tanstack/react-router'
 import BranchDashboard from '@/features/branch-dashboard'
 
 function BranchPage() {
-  const { branchId } = useParams({ from: '/_authenticated/branch-admins/$branchId' })
+  const { branchId } = useParams({ from: '/_authenticated/branches/$branchId/' })
   
   if (!branchId) {
     return <div>Loading...</div>
@@ -11,6 +11,6 @@ function BranchPage() {
   return <BranchDashboard branchId={branchId} />
 }
 
-export const Route = createFileRoute('/_authenticated/branch-admins/$branchId')({
+export const Route = createFileRoute('/_authenticated/branches/$branchId/')({
   component: BranchPage,
 })

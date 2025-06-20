@@ -2,17 +2,18 @@ import { useBranchTopTerminals } from '@/hooks/use-branches'
 import type { DateFilters } from '@/types/api'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Monitor } from 'lucide-react'
+import { Monitor, ExternalLink } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 
 interface BranchTopTerminalsProps {
   branchId: string
+  merchantId?: string
   mode: 'amount' | 'count'
   limit: number
   dateFilters: DateFilters
 }
 
-export function BranchTopTerminals({ branchId, mode, limit, dateFilters }: BranchTopTerminalsProps) {
+export function BranchTopTerminals({ branchId, merchantId, mode, limit, dateFilters }: BranchTopTerminalsProps) {
   const navigate = useNavigate()
   const { data, isLoading, error } = useBranchTopTerminals(
     branchId,
@@ -21,6 +22,16 @@ export function BranchTopTerminals({ branchId, mode, limit, dateFilters }: Branc
     dateFilters,
     !!branchId
   )
+
+  const handleTerminalClick = (terminalId: string) => {
+    if (merchantId) {
+      navigate({
+        to: `/merchants/${merchantId}/${branchId}/${terminalId}`
+      })
+    } else {
+      console.warn('Merchant ID not available for terminal navigation')
+    }
+  }
 
   if (isLoading) {
     return (
@@ -84,11 +95,24 @@ export function BranchTopTerminals({ branchId, mode, limit, dateFilters }: Branc
                   {terminal.transaction_count || 0} transactions
                 </p>
               </div>
-              <div className='font-medium'>
-                {mode === 'amount'
-                  ? `₵${(terminal.total_amount || 0).toLocaleString()}`
-                  : `${terminal.transaction_count || 0} txns`
-                }
+              <div className='flex items-center gap-2'>
+                <div className='font-medium'>
+                  {mode === 'amount'
+                    ? `₵${(terminal.total_amount || 0).toLocaleString()}`
+                    : `${terminal.transaction_count || 0} txns`
+                  }
+                </div>
+                {merchantId && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                    onClick={() => handleTerminalClick(terminal.terminal_id)}
+                    title="View terminal dashboard"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                  </Button>
+                )}
               </div>
             </div>
           </div>

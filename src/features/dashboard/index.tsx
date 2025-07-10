@@ -31,13 +31,15 @@ import { TopMerchants } from './components/top-merchants'
 import { MerchantActivityHeatmap } from './components/merchant-activity-heatmap'
 import { TransactionFrequencyAnalysis } from './components/transaction-frequency-analysis'
 
-import { useAgentStats } from '@/hooks/use-agents'
+import { agentDataExport, useAgentStats } from '@/hooks/use-agents'
 import { useAgent } from '@/context/agent-context'
 import type { DateFilters } from '@/types/api'
 
 export default function Dashboard() {
   const { selectedAgent } = useAgent()
   const [dateFilters, setDateFilters] = useState<DateFilters>({})
+  const [downloading, setDownloading] = useState<boolean>(false)
+  const [downloadText, setDownloadText] = useState<string>("Download")
   const [granularity, setGranularity] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('monthly')
 
   // Separate state for customers and merchants (limit is static at 5)
@@ -131,42 +133,59 @@ export default function Dashboard() {
               </p>
             </div>
             <div className='flex items-center space-x-2'>
-              <Button>Download</Button>
+              <Button disabled={(downloading || downloadText.toLowerCase() != "download")} onClick={async () => {
+
+                setDownloading(true);
+                setDownloadText("Downloading");
+                try {
+                  await agentDataExport(selectedAgent, dateFilters)
+                  setDownloading(false);
+                  setDownloadText("Download");
+                } catch (error) {
+                  setDownloadText("Error")
+                  setTimeout(() => {
+                    setDownloadText("Download");
+                    setDownloading(false);
+                  }, 4000)
+                }
+                setDownloading(false);
+              }}>{downloadText}</Button>
             </div>
           </div>
-        {/* Filters Section */}
-        <ErrorBoundary>
-          <div className='flex gap-4 flex-wrap'>
-            <div className='max-w-md'>
-              <DateFiltersComponent
-                filters={dateFilters}
-                onFiltersChange={setDateFilters}
-                onClear={clearFilters}
-              />
+          
+          {/* Filters Section */}
+          <ErrorBoundary>
+            <div className='flex gap-4 flex-wrap'>
+              <div className='max-w-md'>
+                <DateFiltersComponent
+                  filters={dateFilters}
+                  onFiltersChange={setDateFilters}
+                  onClear={clearFilters}
+                />
+              </div>
+              <div className='max-w-xs'>
+                <ChannelFilter
+                  filters={dateFilters}
+                  onFiltersChange={setDateFilters}
+                  onClear={() => {
+                    const { channel, ...restFilters } = dateFilters
+                    setDateFilters(restFilters)
+                  }}
+                />
+              </div>
             </div>
-            <div className='max-w-xs'>
-              <ChannelFilter
-                filters={dateFilters}
-                onFiltersChange={setDateFilters}
-                onClear={() => {
-                  const { channel, ...restFilters } = dateFilters
-                  setDateFilters(restFilters)
-                }}
-              />
-            </div>
-          </div>
-        </ErrorBoundary>
+          </ErrorBoundary>
 
-        {/* Filter Summary */}
-        <FilterSummary
-          dateFilters={dateFilters}
-          onClearFilter={clearSingleFilter}
-          onClearAll={clearFilters}
-        />
+          {/* Filter Summary */}
+          <FilterSummary
+            dateFilters={dateFilters}
+            onClearFilter={clearSingleFilter}
+            onClearAll={clearFilters}
+          />
 
 
 
-        <div className='space-y-4'>
+          <div className='space-y-4'>
             <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
               {statsLoading ? (
                 // Loading skeleton
@@ -452,7 +471,7 @@ export default function Dashboard() {
                 dateFilters={dateFilters}
               />
             </ErrorBoundary>
-        </div>
+          </div>
         </ConnectionStatus>
       </Main>
     </>

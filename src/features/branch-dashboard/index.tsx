@@ -27,7 +27,7 @@ import { BranchTopCustomers } from './components/branch-top-customers'
 import { BranchTopTerminals } from './components/branch-top-terminals'
 import { BranchTerminalActivityHeatmap } from './components/branch-terminal-activity-heatmap'
 import { BranchTransactionFrequencyAnalysis } from './components/branch-transaction-frequency-analysis'
-import { useBranchStats, useBranchDetails } from '@/hooks/use-branches'
+import { useBranchStats, useBranchDetails, branchDataExport } from '@/hooks/use-branches'
 import type { DateFilters } from '@/types/api'
 import { useNavigate } from '@tanstack/react-router'
 import { useTeam } from '@/context/team-context'
@@ -48,6 +48,9 @@ export default function BranchDashboard({ branchId, merchantId }: BranchDashboar
   const [chartType, setChartType] = useState<'area' | 'bar'>('area')
   const [heatmapMode, setHeatmapMode] = useState<'volume' | 'count' | 'average'>('volume')
   const STATIC_LIMIT = 5
+
+  const [downloading, setDownloading] = useState<boolean>(false)
+  const [downloadText, setDownloadText] = useState<string>("Download")
 
   // Determine if back button should be shown
   // Show back button only for hierarchical navigation or when not in RPAY Branch team context
@@ -113,44 +116,60 @@ export default function BranchDashboard({ branchId, merchantId }: BranchDashboar
               </div>
             </div>
             <div className='flex items-center space-x-2'>
-              <Button>Download</Button>
+              <Button onClick={async () => {
+
+                setDownloading(true);
+                setDownloadText("Downloading...");
+                try {
+                  await branchDataExport(branchId, dateFilters);
+                  setDownloading(false);
+                  setDownloadText("Download");
+                } catch (error) {
+                  setDownloadText("Error")
+                  setTimeout(() => {
+                    setDownloadText("Download");
+                    setDownloading(false);
+                  }, 4000)
+                }
+                setDownloading(false);
+              }} >{downloadText}</Button>
             </div>
           </div>
 
-        {/* Filters Section */}
-        <ErrorBoundary>
-          <div className='flex gap-4 flex-wrap'>
-            <div className='max-w-md'>
-              <DateFiltersComponent
-                filters={dateFilters}
-                onFiltersChange={setDateFilters}
-                onClear={() => setDateFilters({})}
-              />
+          {/* Filters Section */}
+          <ErrorBoundary>
+            <div className='flex gap-4 flex-wrap'>
+              <div className='max-w-md'>
+                <DateFiltersComponent
+                  filters={dateFilters}
+                  onFiltersChange={setDateFilters}
+                  onClear={() => setDateFilters({})}
+                />
+              </div>
+              <div className='max-w-xs'>
+                <ChannelFilter
+                  filters={dateFilters}
+                  onFiltersChange={setDateFilters}
+                  onClear={() => {
+                    const { channel, ...restFilters } = dateFilters
+                    setDateFilters(restFilters)
+                  }}
+                />
+              </div>
             </div>
-            <div className='max-w-xs'>
-              <ChannelFilter
-                filters={dateFilters}
-                onFiltersChange={setDateFilters}
-                onClear={() => {
-                  const { channel, ...restFilters } = dateFilters
-                  setDateFilters(restFilters)
-                }}
-              />
-            </div>
-          </div>
-        </ErrorBoundary>
+          </ErrorBoundary>
 
-        {/* Filter Summary */}
-        <FilterSummary
-          dateFilters={dateFilters}
-          onClearFilter={(key) => {
-            const { [key]: _, ...rest } = dateFilters
-            setDateFilters(rest)
-          }}
-          onClearAll={() => setDateFilters({})}
-        />
+          {/* Filter Summary */}
+          <FilterSummary
+            dateFilters={dateFilters}
+            onClearFilter={(key) => {
+              const { [key]: _, ...rest } = dateFilters
+              setDateFilters(rest)
+            }}
+            onClearAll={() => setDateFilters({})}
+          />
 
-        <div className='space-y-4'>
+          <div className='space-y-4'>
             <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
               {statsLoading ? (
                 // Loading skeleton
@@ -426,7 +445,7 @@ export default function BranchDashboard({ branchId, merchantId }: BranchDashboar
                 />
               </ErrorBoundary>
             </div>
-        </div>
+          </div>
         </ConnectionStatus>
       </Main>
     </>

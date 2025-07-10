@@ -1,24 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Search, MessageCircle, Sparkles } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
 import { useAgent } from '@/context/agent-context'
-import { Header } from '@/components/layout/header'
-import { Main } from '@/components/layout/main'
-import { ProfileDropdown } from '@/components/profile-dropdown'
-import { ThemeSwitch } from '@/components/theme-switch'
 import { DateFiltersComponent } from '@/components/date-filters'
 import type { DateFilters } from '@/types/api'
 
-export const Route = createFileRoute('/_authenticated/target-discovery/merchants/search')({
-  component: MerchantSmartSearchPage,
-})
 
-function MerchantSmartSearchPage() {
+export function MerchantSmartSearch() {
   const { selectedAgent } = useAgent()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<any[]>([])
@@ -74,29 +65,15 @@ function MerchantSmartSearchPage() {
 
   return (
     <>
-      {/* ===== Top Heading ===== */}
-      <Header>
-        <div className='ml-auto flex items-center space-x-4'>
-          <ThemeSwitch />
-          <ProfileDropdown />
-        </div>
-      </Header>
 
       {/* ===== Main ===== */}
-      <Main>
-        <div className="space-y-6">
+        <div className="space-y-6 flex-1 overflow-y-scroll">
           {/* Header */}
           <div className="space-y-4">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/target-discovery">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back
-              </Link>
-            </Button>
             <div>
               <h1 className="text-2xl font-bold flex items-center gap-2">
                 <Sparkles className="h-6 w-6" />
-                Smart Merchant Search
+                Target Discovery
               </h1>
               <p className="text-muted-foreground">Use natural language to find merchants</p>
             </div>
@@ -233,7 +210,6 @@ function MerchantSmartSearchPage() {
             </CardContent>
           </Card>
         </div>
-      </Main>
     </>
   )
 }

@@ -6,6 +6,7 @@ import type {
   GraphParams,
   DateFilters,
 } from '@/types/api'
+import api from '@/lib/api'
 
 // Query keys
 export const agentKeys = {
@@ -17,6 +18,8 @@ export const agentKeys = {
     [...agentKeys.agent(id), 'overview', params] as const,
   stats: (id: string, params?: DateFilters) =>
     [...agentKeys.agent(id), 'stats', params] as const,
+  myMerchants: (id: string, params?: DateFilters) =>
+    [...agentKeys.agent(id), 'my-merchants', params] as const,
   transactionVolume: (id: string, params: GraphParams) =>
     [...agentKeys.agent(id), 'transaction-volume', params] as const,
   transactionCount: (id: string, params: GraphParams) =>
@@ -72,6 +75,18 @@ export const useAgentStats = (
   return useQuery({
     queryKey: agentKeys.stats(agentId, params),
     queryFn: () => agentsApi.getStats(agentId, params),
+    enabled: enabled && !!agentId,
+  })
+}
+
+export const useAgentMerchants = (
+  agentId: string,
+  params: DateFilters = {},
+  enabled = true
+) => {
+  return useQuery({
+    queryKey: agentKeys.stats(agentId, params),
+    queryFn: () => agentsApi.getMyMerchants(agentId, params),
     enabled: enabled && !!agentId,
   })
 }
@@ -147,3 +162,46 @@ export const useAgentTransactionFrequencyAnalysis = (
     enabled: enabled && !!agentId,
   })
 }
+
+export const agentDataExport = async (
+  agentId: string,
+  params: DateFilters = {}
+): Promise<void> => {
+  if (!agentId) {
+    console.warn("agentDataExport: agentId is required.");
+    return; // Exit if agentId is not provided
+  }
+
+  try {
+    const response = await api.get(`/agents/${agentId}/export`, {
+      params,
+      responseType: 'blob',
+    });
+
+    const blob = new Blob([response.data], { type: response.headers['content-type'] });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+
+    const contentDisposition = response.headers['content-disposition'];
+    let filename = 'export.csv';
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="([^"]+)"/);
+      if (filenameMatch && filenameMatch[1]) {
+        filename = filenameMatch[1];
+      }
+    }
+    link.setAttribute('download', filename);
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Failed to export agent data:", error);
+    // You might want to throw the error or handle it more specifically
+    throw error;
+  }
+};

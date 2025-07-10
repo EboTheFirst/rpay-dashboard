@@ -41,6 +41,14 @@ export const agentsApi = {
     return response.data
   },
 
+  getMyMerchants: async (
+    agentId: string,
+    params: DateFilters = {}
+  ): Promise<SimpleStat[]> => {
+    const response = await api.get(`/agents/${agentId}/merchants`, { params })
+    return response.data
+  },
+
   // Get transaction volume over time
   getTransactionVolume: async (
     agentId: string,
@@ -139,4 +147,47 @@ export const agentsApi = {
     })
     return response.data
   },
+
+  getExportData: async (
+    agentId: string,
+    params: DateFilters = {}
+  ): Promise<void> => {
+    const response = await api.get(`/agents/${agentId}/export`, { // Assuming an API endpoint like /agents/{agentId}/export
+      params,
+      responseType: 'blob', // Important: Set responseType to 'blob' to handle binary data
+    });
+
+    // Create a Blob from the response data
+    const blob = new Blob([response.data], { type: response.headers['content-type'] });
+
+    // Create a temporary URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a link element
+    const link = document.createElement('a');
+    link.href = url;
+
+    // Extract filename from Content-Disposition header if available, otherwise use a default
+    const contentDisposition = response.headers['content-disposition'];
+    let filename = 'export.csv'; // Default filename
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="([^"]+)"/);
+      if (filenameMatch && filenameMatch[1]) {
+        filename = filenameMatch[1];
+      }
+    }
+    link.setAttribute('download', filename);
+
+    // Append to the body and programmatically click the link to trigger download
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up: remove the link and revoke the URL
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+
+    return;
+  }
+
+
 }

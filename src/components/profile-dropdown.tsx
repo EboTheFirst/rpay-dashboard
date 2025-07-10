@@ -42,9 +42,9 @@ export function ProfileDropdown() {
       <DropdownMenuContent className='w-56' align='end' forceMount>
         <DropdownMenuLabel className='font-normal'>
           <div className='flex flex-col space-y-1'>
-            <p className='text-sm leading-none font-medium'>Agent</p>
+            <p className='text-sm leading-none font-medium'>RPAY Agent</p>
             <p className='text-muted-foreground text-xs leading-none'>
-              rpayagent@gmail.com
+              agent@rpay.com
             </p>
           </div>
         </DropdownMenuLabel>

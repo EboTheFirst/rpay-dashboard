@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import type { DateFilters, BranchStat, BranchOverview, BranchDetails } from '@/types/api'
+import api from '@/lib/api'
 
 interface GraphPoints {
   labels: string[]
@@ -30,11 +31,11 @@ const buildQueryParams = (
   dateFilters?: DateFilters
 ) => {
   const params = new URLSearchParams()
-  
+
   if (granularity) params.append('granularity', granularity)
   if (topMode) params.append('top_mode', topMode)
   if (topLimit) params.append('top_limit', topLimit.toString())
-  
+
   // Add date filters
   if (dateFilters) {
     Object.entries(dateFilters).forEach(([key, value]) => {
@@ -43,7 +44,7 @@ const buildQueryParams = (
       }
     })
   }
-  
+
   return params.toString()
 }
 
@@ -334,3 +335,46 @@ export const useBranchTransactionFrequencyAnalysis = (
     enabled: enabled && !!branchId,
   })
 }
+
+export const branchDataExport = async (
+  branchAdminId: string,
+  params: DateFilters = {}
+): Promise<void> => { // Changed return type to Promise<void>
+  if (!branchAdminId) {
+    console.warn("branchDataExport: branchAdminId is required.");
+    return; // Exit if branchAdminId is not provided
+  }
+
+  try {
+    const response = await api.get(`/branch-admins/${branchAdminId}/export`, {
+      params,
+      responseType: 'blob',
+    });
+
+    const blob = new Blob([response.data], { type: response.headers['content-type'] });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+
+    const contentDisposition = response.headers['content-disposition'];
+    let filename = 'export.csv';
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="([^"]+)"/);
+      if (filenameMatch && filenameMatch[1]) {
+        filename = filenameMatch[1];
+      }
+    }
+    link.setAttribute('download', filename);
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Failed to export branch data:", error);
+    // You might want to throw the error or handle it more specifically
+    throw error;
+  }
+};

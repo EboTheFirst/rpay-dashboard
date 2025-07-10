@@ -15,6 +15,10 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { ErrorBoundary } from '@/components/error-boundary'
 import { useNavigate } from '@tanstack/react-router'
+import { DateFiltersComponent } from '@/components/date-filters'
+import { ChannelFilter } from '@/components/channel-filter'
+import { DateFilters } from '@/types/api'
+import { FilterIndicator } from '@/components/filter-indicator'
 
 interface PaginatedTerminalsResponse {
   data: Array<{
@@ -45,19 +49,28 @@ function BranchTerminals() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [search, setSearch] = useState('')
   const [searchInput, setSearchInput] = useState('')
+  const [dateFilters, setDateFilters] = useState<DateFilters>({
+    month: new Date().getMonth() + 1, year: new Date().getFullYear()
+  });
+
 
   // Get branch details to get merchant ID for navigation
   const { data: branchDetails } = useBranchDetails(branchId || '', !!branchId)
 
   const { data: terminalsData, isLoading, error } = useQuery<PaginatedTerminalsResponse>({
-    queryKey: ['branch-terminals', branchId, page, pageSize, sortBy, sortOrder, search],
+    queryKey: ['branch-terminals', branchId, page, pageSize, sortBy, sortOrder, search, dateFilters],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: page.toString(),
         page_size: pageSize.toString(),
         sort_by: sortBy,
         sort_order: sortOrder,
-        ...(search && { search })
+        ...(search && { search }),
+        ...Object.fromEntries(
+          Object.entries(dateFilters)
+            .filter(([_, v]) => v !== undefined)
+            .map(([k, v]) => [k, String(v)])
+        ),
       })
 
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
@@ -99,6 +112,26 @@ function BranchTerminals() {
     }
   }
 
+  const clearDateFilter = () => {
+    setDateFilters(prev => {
+      const newFilters: DateFilters = {}
+      if (prev.channel) {
+        newFilters["channel"] = prev["channel"]
+      }
+      return newFilters
+    })
+  }
+
+  const clearChannelFilter = () => {
+    setDateFilters(prev => {
+      const newFilters = { ...prev }
+      if (newFilters.channel) {
+        delete newFilters["channel"]
+      }
+      return newFilters
+    })
+  }
+
   return (
     <>
       {/* ===== Top Heading ===== */}
@@ -130,6 +163,26 @@ function BranchTerminals() {
               </p>
             </div>
           </div>
+
+          <ErrorBoundary>
+            <div className='flex gap-4 flex-wrap'>
+              <div className='max-w-md'>
+                <DateFiltersComponent
+                  filters={dateFilters}
+                  onFiltersChange={setDateFilters}
+                  onClear={clearDateFilter}
+                />
+              </div>
+              <div className='max-w-xs'>
+                <ChannelFilter
+                  filters={dateFilters}
+                  onFiltersChange={setDateFilters}
+                  onClear={clearChannelFilter}
+                />
+              </div>
+            </div>
+          </ErrorBoundary>
+
 
           {/* Search and Filters */}
           <div className="flex items-center gap-4">
@@ -190,13 +243,13 @@ function BranchTerminals() {
                             className="text-right cursor-pointer hover:bg-muted/50"
                             onClick={() => handleSort('total_amount')}
                           >
-                            Total Amount {getSortIcon('total_amount')}
+                            <div className='w-full flex justify-end items-center gap-2 text-right'><FilterIndicator dateFilters={dateFilters} /> Total Amount {getSortIcon('total_amount')}</div>
                           </TableHead>
                           <TableHead
                             className="text-right cursor-pointer hover:bg-muted/50"
                             onClick={() => handleSort('transaction_count')}
                           >
-                            Transactions {getSortIcon('transaction_count')}
+                            <div className='w-full flex justify-end items-center gap-2 text-right'><FilterIndicator dateFilters={dateFilters} /> Transactions {getSortIcon('transaction_count')}</div>
                           </TableHead>
                           <TableHead>Actions</TableHead>
                         </TableRow>

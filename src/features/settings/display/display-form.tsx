@@ -63,7 +63,9 @@ export function DisplayForm() {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((data) => showSubmittedData(data))}
+        onSubmit={form.handleSubmit((data) => {
+          // showSubmittedData(data)
+        })}
         className='space-y-8'
       >
         <FormField

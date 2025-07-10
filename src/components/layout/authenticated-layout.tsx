@@ -6,6 +6,7 @@ import { SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { TeamNavigationHandler } from '@/components/team-navigation-handler'
 import SkipToMain from '@/components/skip-to-main'
+import ChatBot from './chat-bot'
 
 interface Props {
   children?: React.ReactNode
@@ -33,6 +34,7 @@ export function AuthenticatedLayout({ children }: Props) {
         >
           {children ? children : <Outlet />}
         </div>
+        {/* <ChatBot /> */}
       </SidebarProvider>
     </SearchProvider>
   )

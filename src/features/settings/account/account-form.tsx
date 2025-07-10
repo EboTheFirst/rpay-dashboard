@@ -74,7 +74,7 @@ export function AccountForm() {
   })
 
   function onSubmit(data: AccountFormValues) {
-    showSubmittedData(data)
+    // showSubmittedData(data)
   }
 
   return (

@@ -40,7 +40,7 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
 
   function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
-    showSubmittedData(data)
+    // showSubmittedData(data)
 
     setTimeout(() => {
       setIsLoading(false)

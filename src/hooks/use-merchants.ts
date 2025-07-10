@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import type { DateFilters } from '@/types/api'
+import api from '@/lib/api'
 
 interface MerchantStat {
   metric: string
@@ -229,3 +230,46 @@ export const useMerchantList = () => {
     },
   })
 }
+
+export const merchantDataExport = async (
+  merchantId: string,
+  params: DateFilters = {}
+): Promise<void> => {
+  if (!merchantId) {
+    console.warn("merchantDataExport: merchantId is required.");
+    return; // Exit if merchantId is not provided
+  }
+
+  try {
+    const response = await api.get(`/merchants/${merchantId}/export`, {
+      params,
+      responseType: 'blob',
+    });
+
+    const blob = new Blob([response.data], { type: response.headers['content-type'] });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+
+    const contentDisposition = response.headers['content-disposition'];
+    let filename = 'export.csv';
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="([^"]+)"/);
+      if (filenameMatch && filenameMatch[1]) {
+        filename = filenameMatch[1];
+      }
+    }
+    link.setAttribute('download', filename);
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Failed to export merchant data:", error);
+    // You might want to throw the error or handle it more specifically
+    throw error;
+  }
+};

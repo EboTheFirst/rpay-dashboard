@@ -8,7 +8,7 @@ import {
   IconTool,
   IconUserCog,
 } from '@tabler/icons-react'
-import { Store, Users2, Target, Building2 } from 'lucide-react'
+import { Store, Users2, Bot, Target, Building2 } from 'lucide-react'
 import { RpayLogo } from '@/components/rpay-logo'
 import { type SidebarData, type NavItem, type NavLink } from '../types'
 import { type TeamType } from '@/context/team-context'
@@ -192,6 +192,11 @@ export const getTeamSidebarData = (team: TeamType, dashboardUrl: string = '/', s
                 icon: Store as unknown as React.ElementType,
               },
               commonMainItems[1], // Target Discovery
+              // {
+              //   title: 'AI Assistant',
+              //   url: '/ai-assistant',
+              //   icon: Bot as unknown as React.ElementType,
+              // },
             ],
           },
           {

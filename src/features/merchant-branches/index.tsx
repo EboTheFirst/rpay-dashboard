@@ -13,6 +13,10 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { useNavigate } from '@tanstack/react-router'
+import { DateFiltersComponent } from '@/components/date-filters'
+import { ChannelFilter } from '@/components/channel-filter'
+import { DateFilters } from '@/types/api'
+import { FilterIndicator } from '@/components/filter-indicator'
 
 interface PaginatedBranchesResponse {
   data: Array<{
@@ -46,16 +50,25 @@ export default function MerchantBranches({ merchantId }: MerchantBranchesProps) 
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [search, setSearch] = useState('')
   const [searchInput, setSearchInput] = useState('')
+  const [dateFilters, setDateFilters] = useState<DateFilters>({
+    month: new Date().getMonth() + 1, year: new Date().getFullYear()
+  });
+
 
   const { data: branchesData, isLoading, error } = useQuery<PaginatedBranchesResponse>({
-    queryKey: ['merchant-branches', merchantId, page, pageSize, sortBy, sortOrder, search],
+    queryKey: ['merchant-branches', merchantId, page, pageSize, sortBy, sortOrder, search, dateFilters],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: page.toString(),
         page_size: pageSize.toString(),
         sort_by: sortBy,
         sort_order: sortOrder,
-        ...(search && { search })
+        ...(search && { search }),
+        ...Object.fromEntries(
+          Object.entries(dateFilters)
+            .filter(([_, v]) => v !== undefined)
+            .map(([k, v]) => [k, String(v)])
+        ),
       })
 
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
@@ -84,6 +97,26 @@ export default function MerchantBranches({ merchantId }: MerchantBranchesProps) 
   const getSortIcon = (column: string) => {
     if (sortBy !== column) return null
     return sortOrder === 'asc' ? '↑' : '↓'
+  }
+
+  const clearDateFilter = () => {
+    setDateFilters(prev => {
+      const newFilters: DateFilters = {}
+      if (prev.channel) {
+        newFilters["channel"] = prev["channel"]
+      }
+      return newFilters
+    })
+  }
+
+  const clearChannelFilter = () => {
+    setDateFilters(prev => {
+      const newFilters = { ...prev }
+      if (newFilters.channel) {
+        delete newFilters["channel"]
+      }
+      return newFilters
+    })
   }
 
   return (
@@ -117,6 +150,25 @@ export default function MerchantBranches({ merchantId }: MerchantBranchesProps) 
               </p>
             </div>
           </div>
+
+          <ErrorBoundary>
+            <div className='flex gap-4 flex-wrap'>
+              <div className='max-w-md'>
+                <DateFiltersComponent
+                  filters={dateFilters}
+                  onFiltersChange={setDateFilters}
+                  onClear={clearDateFilter}
+                />
+              </div>
+              <div className='max-w-xs'>
+                <ChannelFilter
+                  filters={dateFilters}
+                  onFiltersChange={setDateFilters}
+                  onClear={clearChannelFilter}
+                />
+              </div>
+            </div>
+          </ErrorBoundary>
 
           {/* Search and Filters */}
           <div className="flex items-center gap-4">
@@ -180,13 +232,13 @@ export default function MerchantBranches({ merchantId }: MerchantBranchesProps) 
                             className="text-right cursor-pointer hover:bg-muted/50"
                             onClick={() => handleSort('total_amount')}
                           >
-                            Total Amount {getSortIcon('total_amount')}
+                            <div className='w-full flex justify-end items-center gap-2 text-right'><FilterIndicator dateFilters={dateFilters} /> Total Amount {getSortIcon('total_amount')}</div>
                           </TableHead>
                           <TableHead
                             className="text-right cursor-pointer hover:bg-muted/50"
                             onClick={() => handleSort('transaction_count')}
                           >
-                            Transactions {getSortIcon('transaction_count')}
+                            <div className='w-full flex justify-end items-center gap-2 text-right'><FilterIndicator dateFilters={dateFilters} /> Transactions {getSortIcon('transaction_count')}</div>
                           </TableHead>
                           <TableHead>Actions</TableHead>
                         </TableRow>

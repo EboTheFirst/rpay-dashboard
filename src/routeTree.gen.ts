@@ -30,12 +30,14 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedMerchantsRouteImport } from './routes/_authenticated/merchants/route'
 import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers/route'
 import { Route as AuthenticatedBranchesRouteImport } from './routes/_authenticated/branches/route'
+import { Route as AuthenticatedAiAssistantRouteImport } from './routes/_authenticated/ai-assistant/route'
 import { Route as AuthenticatedAgentsRouteImport } from './routes/_authenticated/agents/route'
 import { Route as AuthenticatedTargetDiscoveryIndexImport } from './routes/_authenticated/target-discovery/index'
 import { Route as AuthenticatedSettingsIndexImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedMerchantsIndexImport } from './routes/_authenticated/merchants/index'
 import { Route as AuthenticatedHelpCenterIndexImport } from './routes/_authenticated/help-center/index'
 import { Route as AuthenticatedCustomersIndexImport } from './routes/_authenticated/customers/index'
+import { Route as AuthenticatedAiAssistantIndexImport } from './routes/_authenticated/ai-assistant/index'
 import { Route as ClerkAuthenticatedUserManagementImport } from './routes/clerk/_authenticated/user-management'
 import { Route as ClerkauthSignUpImport } from './routes/clerk/(auth)/sign-up'
 import { Route as ClerkauthSignInImport } from './routes/clerk/(auth)/sign-in'
@@ -50,6 +52,7 @@ import { Route as AuthenticatedTargetDiscoveryMerchantsIndexImport } from './rou
 import { Route as AuthenticatedTargetDiscoveryCustomersIndexImport } from './routes/_authenticated/target-discovery/customers/index'
 import { Route as AuthenticatedMerchantsMerchantIdIndexImport } from './routes/_authenticated/merchants/$merchantId/index'
 import { Route as AuthenticatedBranchesBranchIdIndexImport } from './routes/_authenticated/branches/$branchId/index'
+import { Route as AuthenticatedAiAssistantTargetDiscoveryIndexImport } from './routes/_authenticated/ai-assistant/target-discovery/index'
 import { Route as AuthenticatedTargetDiscoveryMerchantsSearchImport } from './routes/_authenticated/target-discovery/merchants/search'
 import { Route as AuthenticatedTargetDiscoveryCustomersSearchImport } from './routes/_authenticated/target-discovery/customers/search'
 import { Route as AuthenticatedMerchantsMerchantIdBranchesImport } from './routes/_authenticated/merchants/$merchantId/branches'
@@ -177,6 +180,13 @@ const AuthenticatedBranchesRouteRoute = AuthenticatedBranchesRouteImport.update(
   } as any,
 )
 
+const AuthenticatedAiAssistantRouteRoute =
+  AuthenticatedAiAssistantRouteImport.update({
+    id: '/ai-assistant',
+    path: '/ai-assistant',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+
 const AuthenticatedAgentsRouteRoute = AuthenticatedAgentsRouteImport.update({
   id: '/agents',
   path: '/agents',
@@ -217,6 +227,13 @@ const AuthenticatedCustomersIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedCustomersRouteRoute,
+  } as any)
+
+const AuthenticatedAiAssistantIndexRoute =
+  AuthenticatedAiAssistantIndexImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAiAssistantRouteRoute,
   } as any)
 
 const ClerkAuthenticatedUserManagementRoute =
@@ -315,6 +332,13 @@ const AuthenticatedBranchesBranchIdIndexRoute =
     getParentRoute: () => AuthenticatedBranchesBranchIdRoute,
   } as any)
 
+const AuthenticatedAiAssistantTargetDiscoveryIndexRoute =
+  AuthenticatedAiAssistantTargetDiscoveryIndexImport.update({
+    id: '/target-discovery/',
+    path: '/target-discovery/',
+    getParentRoute: () => AuthenticatedAiAssistantRouteRoute,
+  } as any)
+
 const AuthenticatedTargetDiscoveryMerchantsSearchRoute =
   AuthenticatedTargetDiscoveryMerchantsSearchImport.update({
     id: '/target-discovery/merchants/search',
@@ -387,6 +411,13 @@ declare module '@tanstack/react-router' {
       path: '/agents'
       fullPath: '/agents'
       preLoaderRoute: typeof AuthenticatedAgentsRouteImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/ai-assistant': {
+      id: '/_authenticated/ai-assistant'
+      path: '/ai-assistant'
+      fullPath: '/ai-assistant'
+      preLoaderRoute: typeof AuthenticatedAiAssistantRouteImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/branches': {
@@ -578,6 +609,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClerkAuthenticatedUserManagementImport
       parentRoute: typeof ClerkAuthenticatedRouteImport
     }
+    '/_authenticated/ai-assistant/': {
+      id: '/_authenticated/ai-assistant/'
+      path: '/'
+      fullPath: '/ai-assistant/'
+      preLoaderRoute: typeof AuthenticatedAiAssistantIndexImport
+      parentRoute: typeof AuthenticatedAiAssistantRouteImport
+    }
     '/_authenticated/customers/': {
       id: '/_authenticated/customers/'
       path: '/'
@@ -648,6 +686,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTargetDiscoveryMerchantsSearchImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/ai-assistant/target-discovery/': {
+      id: '/_authenticated/ai-assistant/target-discovery/'
+      path: '/target-discovery'
+      fullPath: '/ai-assistant/target-discovery'
+      preLoaderRoute: typeof AuthenticatedAiAssistantTargetDiscoveryIndexImport
+      parentRoute: typeof AuthenticatedAiAssistantRouteImport
+    }
     '/_authenticated/branches/$branchId/': {
       id: '/_authenticated/branches/$branchId/'
       path: '/'
@@ -707,6 +752,23 @@ const AuthenticatedAgentsRouteRouteChildren: AuthenticatedAgentsRouteRouteChildr
 const AuthenticatedAgentsRouteRouteWithChildren =
   AuthenticatedAgentsRouteRoute._addFileChildren(
     AuthenticatedAgentsRouteRouteChildren,
+  )
+
+interface AuthenticatedAiAssistantRouteRouteChildren {
+  AuthenticatedAiAssistantIndexRoute: typeof AuthenticatedAiAssistantIndexRoute
+  AuthenticatedAiAssistantTargetDiscoveryIndexRoute: typeof AuthenticatedAiAssistantTargetDiscoveryIndexRoute
+}
+
+const AuthenticatedAiAssistantRouteRouteChildren: AuthenticatedAiAssistantRouteRouteChildren =
+  {
+    AuthenticatedAiAssistantIndexRoute: AuthenticatedAiAssistantIndexRoute,
+    AuthenticatedAiAssistantTargetDiscoveryIndexRoute:
+      AuthenticatedAiAssistantTargetDiscoveryIndexRoute,
+  }
+
+const AuthenticatedAiAssistantRouteRouteWithChildren =
+  AuthenticatedAiAssistantRouteRoute._addFileChildren(
+    AuthenticatedAiAssistantRouteRouteChildren,
   )
 
 interface AuthenticatedBranchesBranchIdRouteChildren {
@@ -837,6 +899,7 @@ const AuthenticatedSettingsRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAgentsRouteRoute: typeof AuthenticatedAgentsRouteRouteWithChildren
+  AuthenticatedAiAssistantRouteRoute: typeof AuthenticatedAiAssistantRouteRouteWithChildren
   AuthenticatedBranchesRouteRoute: typeof AuthenticatedBranchesRouteRouteWithChildren
   AuthenticatedCustomersRouteRoute: typeof AuthenticatedCustomersRouteRouteWithChildren
   AuthenticatedMerchantsRouteRoute: typeof AuthenticatedMerchantsRouteRouteWithChildren
@@ -852,6 +915,8 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAgentsRouteRoute: AuthenticatedAgentsRouteRouteWithChildren,
+  AuthenticatedAiAssistantRouteRoute:
+    AuthenticatedAiAssistantRouteRouteWithChildren,
   AuthenticatedBranchesRouteRoute: AuthenticatedBranchesRouteRouteWithChildren,
   AuthenticatedCustomersRouteRoute:
     AuthenticatedCustomersRouteRouteWithChildren,
@@ -922,6 +987,7 @@ export interface FileRoutesByFullPath {
   '': typeof AuthenticatedRouteRouteWithChildren
   '/clerk': typeof ClerkAuthenticatedRouteRouteWithChildren
   '/agents': typeof AuthenticatedAgentsRouteRouteWithChildren
+  '/ai-assistant': typeof AuthenticatedAiAssistantRouteRouteWithChildren
   '/branches': typeof AuthenticatedBranchesRouteRouteWithChildren
   '/customers': typeof AuthenticatedCustomersRouteRouteWithChildren
   '/merchants': typeof AuthenticatedMerchantsRouteRouteWithChildren
@@ -948,6 +1014,7 @@ export interface FileRoutesByFullPath {
   '/clerk/sign-in': typeof ClerkauthSignInRoute
   '/clerk/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/user-management': typeof ClerkAuthenticatedUserManagementRoute
+  '/ai-assistant/': typeof AuthenticatedAiAssistantIndexRoute
   '/customers/': typeof AuthenticatedCustomersIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
   '/merchants/': typeof AuthenticatedMerchantsIndexRoute
@@ -958,6 +1025,7 @@ export interface FileRoutesByFullPath {
   '/merchants/$merchantId/branches': typeof AuthenticatedMerchantsMerchantIdBranchesRoute
   '/target-discovery/customers/search': typeof AuthenticatedTargetDiscoveryCustomersSearchRoute
   '/target-discovery/merchants/search': typeof AuthenticatedTargetDiscoveryMerchantsSearchRoute
+  '/ai-assistant/target-discovery': typeof AuthenticatedAiAssistantTargetDiscoveryIndexRoute
   '/branches/$branchId/': typeof AuthenticatedBranchesBranchIdIndexRoute
   '/merchants/$merchantId/': typeof AuthenticatedMerchantsMerchantIdIndexRoute
   '/target-discovery/customers': typeof AuthenticatedTargetDiscoveryCustomersIndexRoute
@@ -989,6 +1057,7 @@ export interface FileRoutesByTo {
   '/clerk/sign-in': typeof ClerkauthSignInRoute
   '/clerk/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/user-management': typeof ClerkAuthenticatedUserManagementRoute
+  '/ai-assistant': typeof AuthenticatedAiAssistantIndexRoute
   '/customers': typeof AuthenticatedCustomersIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
   '/merchants': typeof AuthenticatedMerchantsIndexRoute
@@ -998,6 +1067,7 @@ export interface FileRoutesByTo {
   '/merchants/$merchantId/branches': typeof AuthenticatedMerchantsMerchantIdBranchesRoute
   '/target-discovery/customers/search': typeof AuthenticatedTargetDiscoveryCustomersSearchRoute
   '/target-discovery/merchants/search': typeof AuthenticatedTargetDiscoveryMerchantsSearchRoute
+  '/ai-assistant/target-discovery': typeof AuthenticatedAiAssistantTargetDiscoveryIndexRoute
   '/branches/$branchId': typeof AuthenticatedBranchesBranchIdIndexRoute
   '/merchants/$merchantId': typeof AuthenticatedMerchantsMerchantIdIndexRoute
   '/target-discovery/customers': typeof AuthenticatedTargetDiscoveryCustomersIndexRoute
@@ -1011,6 +1081,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/clerk': typeof ClerkRouteRouteWithChildren
   '/_authenticated/agents': typeof AuthenticatedAgentsRouteRouteWithChildren
+  '/_authenticated/ai-assistant': typeof AuthenticatedAiAssistantRouteRouteWithChildren
   '/_authenticated/branches': typeof AuthenticatedBranchesRouteRouteWithChildren
   '/_authenticated/customers': typeof AuthenticatedCustomersRouteRouteWithChildren
   '/_authenticated/merchants': typeof AuthenticatedMerchantsRouteRouteWithChildren
@@ -1038,6 +1109,7 @@ export interface FileRoutesById {
   '/clerk/(auth)/sign-in': typeof ClerkauthSignInRoute
   '/clerk/(auth)/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/_authenticated/user-management': typeof ClerkAuthenticatedUserManagementRoute
+  '/_authenticated/ai-assistant/': typeof AuthenticatedAiAssistantIndexRoute
   '/_authenticated/customers/': typeof AuthenticatedCustomersIndexRoute
   '/_authenticated/help-center/': typeof AuthenticatedHelpCenterIndexRoute
   '/_authenticated/merchants/': typeof AuthenticatedMerchantsIndexRoute
@@ -1048,6 +1120,7 @@ export interface FileRoutesById {
   '/_authenticated/merchants/$merchantId/branches': typeof AuthenticatedMerchantsMerchantIdBranchesRoute
   '/_authenticated/target-discovery/customers/search': typeof AuthenticatedTargetDiscoveryCustomersSearchRoute
   '/_authenticated/target-discovery/merchants/search': typeof AuthenticatedTargetDiscoveryMerchantsSearchRoute
+  '/_authenticated/ai-assistant/target-discovery/': typeof AuthenticatedAiAssistantTargetDiscoveryIndexRoute
   '/_authenticated/branches/$branchId/': typeof AuthenticatedBranchesBranchIdIndexRoute
   '/_authenticated/merchants/$merchantId/': typeof AuthenticatedMerchantsMerchantIdIndexRoute
   '/_authenticated/target-discovery/customers/': typeof AuthenticatedTargetDiscoveryCustomersIndexRoute
@@ -1062,6 +1135,7 @@ export interface FileRouteTypes {
     | ''
     | '/clerk'
     | '/agents'
+    | '/ai-assistant'
     | '/branches'
     | '/customers'
     | '/merchants'
@@ -1088,6 +1162,7 @@ export interface FileRouteTypes {
     | '/clerk/sign-in'
     | '/clerk/sign-up'
     | '/clerk/user-management'
+    | '/ai-assistant/'
     | '/customers/'
     | '/help-center'
     | '/merchants/'
@@ -1098,6 +1173,7 @@ export interface FileRouteTypes {
     | '/merchants/$merchantId/branches'
     | '/target-discovery/customers/search'
     | '/target-discovery/merchants/search'
+    | '/ai-assistant/target-discovery'
     | '/branches/$branchId/'
     | '/merchants/$merchantId/'
     | '/target-discovery/customers'
@@ -1128,6 +1204,7 @@ export interface FileRouteTypes {
     | '/clerk/sign-in'
     | '/clerk/sign-up'
     | '/clerk/user-management'
+    | '/ai-assistant'
     | '/customers'
     | '/help-center'
     | '/merchants'
@@ -1137,6 +1214,7 @@ export interface FileRouteTypes {
     | '/merchants/$merchantId/branches'
     | '/target-discovery/customers/search'
     | '/target-discovery/merchants/search'
+    | '/ai-assistant/target-discovery'
     | '/branches/$branchId'
     | '/merchants/$merchantId'
     | '/target-discovery/customers'
@@ -1148,6 +1226,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/clerk'
     | '/_authenticated/agents'
+    | '/_authenticated/ai-assistant'
     | '/_authenticated/branches'
     | '/_authenticated/customers'
     | '/_authenticated/merchants'
@@ -1175,6 +1254,7 @@ export interface FileRouteTypes {
     | '/clerk/(auth)/sign-in'
     | '/clerk/(auth)/sign-up'
     | '/clerk/_authenticated/user-management'
+    | '/_authenticated/ai-assistant/'
     | '/_authenticated/customers/'
     | '/_authenticated/help-center/'
     | '/_authenticated/merchants/'
@@ -1185,6 +1265,7 @@ export interface FileRouteTypes {
     | '/_authenticated/merchants/$merchantId/branches'
     | '/_authenticated/target-discovery/customers/search'
     | '/_authenticated/target-discovery/merchants/search'
+    | '/_authenticated/ai-assistant/target-discovery/'
     | '/_authenticated/branches/$branchId/'
     | '/_authenticated/merchants/$merchantId/'
     | '/_authenticated/target-discovery/customers/'
@@ -1252,6 +1333,7 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/route.tsx",
       "children": [
         "/_authenticated/agents",
+        "/_authenticated/ai-assistant",
         "/_authenticated/branches",
         "/_authenticated/customers",
         "/_authenticated/merchants",
@@ -1277,6 +1359,14 @@ export const routeTree = rootRoute
       "parent": "/_authenticated",
       "children": [
         "/_authenticated/agents/$agentId"
+      ]
+    },
+    "/_authenticated/ai-assistant": {
+      "filePath": "_authenticated/ai-assistant/route.tsx",
+      "parent": "/_authenticated",
+      "children": [
+        "/_authenticated/ai-assistant/",
+        "/_authenticated/ai-assistant/target-discovery/"
       ]
     },
     "/_authenticated/branches": {
@@ -1410,6 +1500,10 @@ export const routeTree = rootRoute
       "filePath": "clerk/_authenticated/user-management.tsx",
       "parent": "/clerk/_authenticated"
     },
+    "/_authenticated/ai-assistant/": {
+      "filePath": "_authenticated/ai-assistant/index.tsx",
+      "parent": "/_authenticated/ai-assistant"
+    },
     "/_authenticated/customers/": {
       "filePath": "_authenticated/customers/index.tsx",
       "parent": "/_authenticated/customers"
@@ -1453,6 +1547,10 @@ export const routeTree = rootRoute
     "/_authenticated/target-discovery/merchants/search": {
       "filePath": "_authenticated/target-discovery/merchants/search.tsx",
       "parent": "/_authenticated"
+    },
+    "/_authenticated/ai-assistant/target-discovery/": {
+      "filePath": "_authenticated/ai-assistant/target-discovery/index.tsx",
+      "parent": "/_authenticated/ai-assistant"
     },
     "/_authenticated/branches/$branchId/": {
       "filePath": "_authenticated/branches/$branchId/index.tsx",

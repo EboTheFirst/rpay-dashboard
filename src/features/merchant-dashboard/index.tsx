@@ -27,7 +27,7 @@ import { MerchantTopCustomers } from './components/merchant-top-customers'
 import { MerchantTopBranches } from './components/merchant-top-branches'
 import { MerchantBranchActivityHeatmap } from './components/merchant-branch-activity-heatmap'
 import { MerchantTransactionFrequencyAnalysis } from './components/merchant-transaction-frequency-analysis'
-import { useMerchantStats, useMerchantDetails } from '@/hooks/use-merchants'
+import { useMerchantStats, useMerchantDetails, merchantDataExport } from '@/hooks/use-merchants'
 import type { DateFilters } from '@/types/api'
 import { useNavigate } from '@tanstack/react-router'
 import { useTeam } from '@/context/team-context'
@@ -47,6 +47,9 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
   const [chartType, setChartType] = useState<'area' | 'bar'>('area')
   const [heatmapMode, setHeatmapMode] = useState<'volume' | 'count' | 'average'>('volume')
   const STATIC_LIMIT = 5
+
+  const [downloading, setDownloading] = useState<boolean>(false)
+  const [downloadText, setDownloadText] = useState<string>("Download")
 
   // Determine if back button should be shown
   // Show back button only for hierarchical navigation or when not in RPAY Merchant team context
@@ -169,40 +172,57 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
               </div>
             </div>
             <div className='flex items-center space-x-2'>
-              <Button>Download</Button>
+              <Button onClick={async () => {
+
+                setDownloading(true);
+                setDownloadText("Downloading");
+                try {
+                  await merchantDataExport(merchantId, dateFilters)
+                  setDownloading(false);
+                  setDownloadText("Download");
+                } catch (error) {
+                  setDownloadText("Error")
+                  setTimeout(() => {
+                    setDownloadText("Download");
+                    setDownloading(false);
+                  }, 4000)
+                }
+                setDownloading(false);
+              }} >{downloadText}</Button>
             </div>
           </div>
-        {/* Filters Section */}
-        <ErrorBoundary>
-          <div className='flex gap-4 flex-wrap'>
-            <div className='max-w-md'>
-              <DateFiltersComponent
-                filters={dateFilters}
-                onFiltersChange={setDateFilters}
-                onClear={clearFilters}
-              />
+          
+          {/* Filters Section */}
+          <ErrorBoundary>
+            <div className='flex gap-4 flex-wrap'>
+              <div className='max-w-md'>
+                <DateFiltersComponent
+                  filters={dateFilters}
+                  onFiltersChange={setDateFilters}
+                  onClear={clearFilters}
+                />
+              </div>
+              <div className='max-w-xs'>
+                <ChannelFilter
+                  filters={dateFilters}
+                  onFiltersChange={setDateFilters}
+                  onClear={() => {
+                    const { channel, ...restFilters } = dateFilters
+                    setDateFilters(restFilters)
+                  }}
+                />
+              </div>
             </div>
-            <div className='max-w-xs'>
-              <ChannelFilter
-                filters={dateFilters}
-                onFiltersChange={setDateFilters}
-                onClear={() => {
-                  const { channel, ...restFilters } = dateFilters
-                  setDateFilters(restFilters)
-                }}
-              />
-            </div>
-          </div>
-        </ErrorBoundary>
+          </ErrorBoundary>
 
-        {/* Filter Summary */}
-        <FilterSummary
-          dateFilters={dateFilters}
-          onClearFilter={clearSingleFilter}
-          onClearAll={clearFilters}
-        />
+          {/* Filter Summary */}
+          <FilterSummary
+            dateFilters={dateFilters}
+            onClearFilter={clearSingleFilter}
+            onClearAll={clearFilters}
+          />
 
-        <div className='space-y-4'>
+          <div className='space-y-4'>
             <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
               {statsLoading ? (
                 // Loading skeleton
@@ -472,7 +492,7 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
                 dateFilters={dateFilters}
               />
             </ErrorBoundary>
-        </div>
+          </div>
         </ConnectionStatus>
       </Main>
     </>

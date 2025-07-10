@@ -25,7 +25,7 @@ import { TerminalTopCustomers } from './components/terminal-top-customers'
 import { TerminalTransactionFrequencyAnalysis } from './components/terminal-transaction-frequency-analysis'
 import { TerminalTransactionVolume } from './components/terminal-transaction-volume'
 import { TerminalStats } from './components/terminal-stats'
-import { useTerminalStats, useTerminalDetails } from '@/hooks/use-terminals'
+import { useTerminalStats, useTerminalDetails, terminalDataExport } from '@/hooks/use-terminals'
 
 const STATIC_LIMIT = 5
 
@@ -39,6 +39,9 @@ export function TerminalDashboard() {
   const [granularity, setGranularity] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('monthly')
   const [trendMode, setTrendMode] = useState<'amount' | 'count'>('amount')
   const [chartType, setChartType] = useState<'area' | 'bar'>('area')
+
+  const [downloading, setDownloading] = useState<boolean>(false)
+  const [downloadText, setDownloadText] = useState<string>("Download")
 
   const { data: terminalStats, isLoading: statsLoading } = useTerminalStats(
     terminalId as string,
@@ -232,7 +235,23 @@ export function TerminalDashboard() {
               </div>
             </div>
             <div className='flex items-center space-x-2'>
-              <Button>Download</Button>
+              <Button onClick={async () => {
+
+                setDownloading(true);
+                setDownloadText("Downloading");
+                try {
+                  await terminalDataExport(terminalId, dateFilters)
+                  setDownloading(false);
+                  setDownloadText("Download");
+                } catch (error) {
+                  setDownloadText("Error")
+                  setTimeout(() => {
+                    setDownloadText("Download");
+                    setDownloading(false);
+                  }, 4000)
+                }
+                setDownloading(false);
+              }} >{downloadText}</Button>
             </div>
           </div>
 

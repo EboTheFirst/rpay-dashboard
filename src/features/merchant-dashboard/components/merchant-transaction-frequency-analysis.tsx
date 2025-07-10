@@ -165,7 +165,7 @@ export function MerchantTransactionFrequencyAnalysis({
               {data.summary?.map((stat, index) => (
                 <div key={index} className="rounded-lg border p-3">
                   <div className="text-2xl font-bold">
-                    {typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}
+                    {typeof stat.value === 'number' ? stat.value.toLocaleString() || 0 : stat.value || 0}
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {stat.metric}

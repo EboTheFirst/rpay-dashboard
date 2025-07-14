@@ -192,11 +192,11 @@ export const getTeamSidebarData = (team: TeamType, dashboardUrl: string = '/', s
                 icon: Store as unknown as React.ElementType,
               },
               commonMainItems[1], // Target Discovery
-              // {
-              //   title: 'AI Assistant',
-              //   url: '/ai-assistant',
-              //   icon: Bot as unknown as React.ElementType,
-              // },
+              {
+                title: 'AI Assistant',
+                url: '/ai-assistant',
+                icon: Bot as unknown as React.ElementType,
+              },
             ],
           },
           {
@@ -219,6 +219,11 @@ export const getTeamSidebarData = (team: TeamType, dashboardUrl: string = '/', s
                 icon: Store as unknown as React.ElementType,
               },
               commonMainItems[1], // Target Discovery
+              {
+                title: 'AI Assistant',
+                url: '/ai-assistant',
+                icon: Bot as unknown as React.ElementType,
+              },
             ],
           },
         ],
@@ -235,6 +240,11 @@ export const getTeamSidebarData = (team: TeamType, dashboardUrl: string = '/', s
                 title: 'Terminals',
                 url: (selectedEntity ? `/branches/${selectedEntity}/terminals` : '/branches') as any,
                 icon: Building2 as unknown as React.ElementType,
+              },
+              {
+                title: 'AI Assistant',
+                url: '/ai-assistant',
+                icon: Bot as unknown as React.ElementType,
               },
             ],
           },

@@ -22,6 +22,7 @@ import { FilterIndicator } from '@/components/filter-indicator'
 
 interface PaginatedTerminalsResponse {
   data: Array<{
+    daily_avg_amount: string
     terminal_id: string
     terminal_name?: string
     total_amount: number
@@ -247,6 +248,12 @@ function BranchTerminals() {
                           </TableHead>
                           <TableHead
                             className="text-right cursor-pointer hover:bg-muted/50"
+                            onClick={() => handleSort('daily_avg_amount')}
+                          >
+                            <div className='w-full flex justify-end items-center gap-2 text-right'><FilterIndicator dateFilters={dateFilters} /> Daily Avg. Amt. {getSortIcon('transaction_count')}</div>
+                          </TableHead>
+                          <TableHead
+                            className="text-right cursor-pointer hover:bg-muted/50"
                             onClick={() => handleSort('transaction_count')}
                           >
                             <div className='w-full flex justify-end items-center gap-2 text-right'><FilterIndicator dateFilters={dateFilters} /> Transactions {getSortIcon('transaction_count')}</div>
@@ -262,6 +269,11 @@ function BranchTerminals() {
                             </TableCell>
                             <TableCell className="text-right">
                               ₵{terminal.total_amount.toLocaleString()}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className='flex items-center justify-end gap-2 text-right'>
+                                ₵{parseFloat(terminal.daily_avg_amount).toFixed(2)}
+                              </div>
                             </TableCell>
                             <TableCell className="text-right">
                               <Badge variant="secondary">

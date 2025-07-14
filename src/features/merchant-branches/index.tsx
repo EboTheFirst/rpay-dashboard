@@ -20,6 +20,7 @@ import { FilterIndicator } from '@/components/filter-indicator'
 
 interface PaginatedBranchesResponse {
   data: Array<{
+    daily_avg_amount: string
     branch_admin_id: string
     branch_name?: string
     total_amount: number
@@ -236,6 +237,12 @@ export default function MerchantBranches({ merchantId }: MerchantBranchesProps) 
                           </TableHead>
                           <TableHead
                             className="text-right cursor-pointer hover:bg-muted/50"
+                            onClick={() => handleSort('daily_avg_amount')}
+                          >
+                            <div className='w-full flex justify-end items-center gap-2 text-right'><FilterIndicator dateFilters={dateFilters} /> Daily Avg. Amt. {getSortIcon('transaction_count')}</div>
+                          </TableHead>
+                          <TableHead
+                            className="text-right cursor-pointer hover:bg-muted/50"
                             onClick={() => handleSort('transaction_count')}
                           >
                             <div className='w-full flex justify-end items-center gap-2 text-right'><FilterIndicator dateFilters={dateFilters} /> Transactions {getSortIcon('transaction_count')}</div>
@@ -254,6 +261,11 @@ export default function MerchantBranches({ merchantId }: MerchantBranchesProps) 
                             </TableCell>
                             <TableCell className="text-right">
                               ₵{branch.total_amount.toLocaleString()}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className='flex items-center justify-end gap-2 text-right'>
+                                ₵{parseFloat(branch.daily_avg_amount).toFixed(2)}
+                              </div>
                             </TableCell>
                             <TableCell className="text-right">
                               <Badge variant="secondary">

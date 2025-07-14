@@ -1,9 +1,14 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useMerchantList } from '@/hooks/use-merchants'
 import { useBranchList } from '@/hooks/use-branches'
+import { useAgentList } from '@/hooks/use-agents'
 
 export type TeamType = 'RPAY Analytics' | 'RPAY Merchant' | 'RPAY Branch'
 export type NavigationContext = 'direct' | 'hierarchical'
+
+export const RPAYTeam: Record<string, TeamType> = {
+  agent: "RPAY Analytics", merchant: "RPAY Merchant", branch: "RPAY Branch"
+}
 
 interface TeamContextType {
   selectedTeam: TeamType
@@ -22,22 +27,23 @@ interface TeamProviderProps {
 }
 
 export function TeamProvider({ children }: TeamProviderProps) {
-  const [selectedTeam, setSelectedTeam] = useState<TeamType>('RPAY Analytics')
+  const [selectedTeam, setSelectedTeam] = useState<TeamType>(RPAYTeam.agent)
   const [selectedEntity, setSelectedEntity] = useState<string>('')
   const [navigationContext, setNavigationContext] = useState<NavigationContext>('direct')
 
   // Get entity lists for auto-selection
+  const { data: agents } = useAgentList()
   const { data: merchants } = useMerchantList()
   const { data: branches } = useBranchList()
 
   // Function to get the appropriate dashboard URL based on team and entity
   const getDashboardUrl = (): string => {
     switch (selectedTeam) {
-      case 'RPAY Analytics':
+      case RPAYTeam.agent:
         return '/'
-      case 'RPAY Merchant':
+      case RPAYTeam.merchant:
         return selectedEntity ? `/merchants/${selectedEntity}` : '/'
-      case 'RPAY Branch':
+      case RPAYTeam.branch:
         return selectedEntity ? `/branches/${selectedEntity}` : '/'
       default:
         return '/'
@@ -54,7 +60,7 @@ export function TeamProvider({ children }: TeamProviderProps) {
   // Load selected team from localStorage on mount
   useEffect(() => {
     const savedTeam = localStorage.getItem('selectedTeam') as TeamType
-    if (savedTeam && ['RPAY Analytics', 'RPAY Merchant', 'RPAY Branch'].includes(savedTeam)) {
+    if (savedTeam && [RPAYTeam.agent, RPAYTeam.merchant, RPAYTeam.branch].includes(savedTeam)) {
       setSelectedTeam(savedTeam)
     }
   }, [])
@@ -70,25 +76,24 @@ export function TeamProvider({ children }: TeamProviderProps) {
   useEffect(() => {
     const savedEntity = localStorage.getItem(`selectedEntity_${selectedTeam}`)
 
-    if (selectedTeam === 'RPAY Merchant' && merchants) {
+    if (selectedTeam === RPAYTeam.merchant && merchants) {
       if (savedEntity && merchants.some(m => m.merchant_id === savedEntity)) {
         setSelectedEntity(savedEntity)
       } else if (merchants.length > 0) {
         setSelectedEntity(merchants[0].merchant_id)
       }
-    } else if (selectedTeam === 'RPAY Branch' && branches) {
+    } else if (selectedTeam === RPAYTeam.branch && branches) {
       if (savedEntity && branches.some(b => b.branch_admin_id === savedEntity)) {
         setSelectedEntity(savedEntity)
       } else if (branches.length > 0) {
         setSelectedEntity(branches[0].branch_admin_id)
       }
-    } else if (selectedTeam === 'RPAY Analytics') {
-      // For analytics team, we don't need to set an entity as it uses agent context
-      setSelectedEntity('')
-    } else if (savedEntity) {
-      setSelectedEntity(savedEntity)
-    } else {
-      setSelectedEntity('')
+    } else if (selectedTeam === RPAYTeam.agent && agents) {
+      if (savedEntity && agents.some(a => a.id === savedEntity)) {
+        setSelectedEntity(savedEntity)
+      } else if (agents.length > 0) {
+        setSelectedEntity(agents[0].id)
+      }
     }
   }, [selectedTeam, merchants, branches])
 

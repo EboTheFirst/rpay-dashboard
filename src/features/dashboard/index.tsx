@@ -207,7 +207,7 @@ export default function Dashboard() {
                   stat.metric.includes('Total Transaction Value') ||
                   stat.metric.includes('Average Transaction Value') ||
                   stat.metric.includes('Transaction Count') ||
-                  stat.metric.includes('Unique Merchants')
+                  stat.metric.includes('Merchants')
                 ).map((stat, index) => (
                   <Card key={stat.metric}>
                     <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>

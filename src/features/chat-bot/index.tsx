@@ -55,11 +55,11 @@ const sidebarNavItems = [
         icon: <Edit size={18} />,
         href: '/ai-assistant',
     },
-    {
-        title: 'Target Discovery',
-        icon: <Target size={18} />,
-        href: '/ai-assistant/target-discovery',
-    },
+    // {
+    //     title: 'Target Discovery',
+    //     icon: <Target size={18} />,
+    //     href: '/ai-assistant/target-discovery',
+    // },
     // {
     //     title: 'Account',
     //     icon: <IconTool size={18} />,

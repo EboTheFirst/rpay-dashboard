@@ -6,7 +6,7 @@ import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import SidebarNav from '../settings/components/sidebar-nav'
-import {  Edit, Target } from 'lucide-react'
+import { Edit } from 'lucide-react'
 
 
 

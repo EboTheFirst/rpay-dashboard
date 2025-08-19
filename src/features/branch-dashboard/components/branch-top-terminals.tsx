@@ -76,7 +76,7 @@ export function BranchTopTerminals({ branchId, merchantId, mode, limit, dateFilt
         const terminalId = terminal.terminal_id || `Terminal ${index + 1}`
         const initials = terminalId
           .split(' ')
-          .map(word => word.charAt(0))
+          .map((word: string) => word.charAt(0))
           .join('')
           .toUpperCase()
           .slice(0, 2) || 'T'

@@ -46,14 +46,14 @@ export function BotGraph({
 
 
     /* ─────────  mode (amount vs count)  ───────── */
-    const mode = axes?.y_axis_keys?.some(k =>
-        k.toLowerCase().includes('amount'),
-    )
-        ? 'amount'
-        : 'count';
+    // const _mode = axes?.y_axis_keys?.some(k =>
+    //     k.toLowerCase().includes('amount'),
+    // )
+    //     ? 'amount'
+    //     : 'count';
 
-    const formatValue = (v: number) =>
-        mode === 'amount' ? `₵${v.toLocaleString()}` : v.toLocaleString();
+    // const formatValue = (v: number) =>
+    //     mode === 'amount' ? `₵${v.toLocaleString()}` : v.toLocaleString();
 
     /* ─────────  Tooltip  ───────── */
     const tooltipContent = ({ active, payload, label }: any) => {
@@ -66,7 +66,7 @@ export function BotGraph({
                 </div>
                 <div className="mb-2 font-semibold">{label}</div>
 
-                {payload.map((item: any, i: number) => (
+                {payload.map((item: any, _i: number) => (
                     <div
                         key={item.dataKey}
                         className="flex items-center justify-between gap-2 text-sm"

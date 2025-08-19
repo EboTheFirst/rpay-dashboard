@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Monitor } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -20,7 +20,7 @@ import { ConnectionStatus } from '@/components/connection-status'
 import type { DateFilters } from '@/types/api'
 
 // Import terminal dashboard components
-import { TerminalOverview } from './components/terminal-overview'
+// import { TerminalOverview } from './components/terminal-overview'
 import { TerminalTopCustomers } from './components/terminal-top-customers'
 import { TerminalTransactionFrequencyAnalysis } from './components/terminal-transaction-frequency-analysis'
 import { TerminalTransactionVolume } from './components/terminal-transaction-volume'
@@ -40,7 +40,7 @@ export function TerminalDashboard() {
   const [trendMode, setTrendMode] = useState<'amount' | 'count'>('amount')
   const [chartType, setChartType] = useState<'area' | 'bar'>('area')
 
-  const [downloading, setDownloading] = useState<boolean>(false)
+  const [_downloading, setDownloading] = useState<boolean>(false)
   const [downloadText, setDownloadText] = useState<string>("Download")
 
   const { data: terminalStats, isLoading: statsLoading } = useTerminalStats(

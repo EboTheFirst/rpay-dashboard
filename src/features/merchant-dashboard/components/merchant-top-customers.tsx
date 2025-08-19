@@ -65,7 +65,7 @@ export function MerchantTopCustomers({
         const customerId = customer.customer_id || `Customer ${index + 1}`
         const initials = customerId
           .split(' ')
-          .map(word => word.charAt(0))
+          .map((word: string) => word.charAt(0))
           .join('')
           .toUpperCase()
           .slice(0, 2) || 'C'

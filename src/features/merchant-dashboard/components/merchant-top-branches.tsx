@@ -2,7 +2,7 @@ import { useMerchantTopBranches } from '@/hooks/use-branches'
 import type { DateFilters } from '@/types/api'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Building2, ExternalLink } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useTeam } from '@/context/team-context'
 

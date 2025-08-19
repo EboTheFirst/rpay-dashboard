@@ -1,6 +1,6 @@
 import { useTerminalStats } from '@/hooks/use-terminals'
 import type { DateFilters } from '@/types/api'
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { Minus } from 'lucide-react'
 
 interface TerminalStatsProps {
   terminalId: string
@@ -64,9 +64,9 @@ export function TerminalStats({ terminalId, dateFilters }: TerminalStatsProps) {
     let formattedValue = stat.value
     if (typeof stat.value === 'number') {
       if (isAmount) {
-        formattedValue = `₵${stat.value.toLocaleString()}`
+        formattedValue = `₵${stat.value.toLocaleString()}` as any
       } else {
-        formattedValue = stat.value.toLocaleString()
+        formattedValue = stat.value.toLocaleString() as any
       }
     }
 
@@ -78,7 +78,7 @@ export function TerminalStats({ terminalId, dateFilters }: TerminalStatsProps) {
     }
   })
 
-  const getTrendIcon = (metric: string) => {
+  const getTrendIcon = (_metric: string) => {
     // For now, we'll show neutral trend since we don't have historical comparison
     // In a real implementation, you'd compare with previous period
     return <Minus className="h-4 w-4 text-muted-foreground" />

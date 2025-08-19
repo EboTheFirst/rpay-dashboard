@@ -28,10 +28,10 @@ import { Users, Store } from 'lucide-react'
 import { Overview } from './components/overview'
 import { AgentTopCustomers } from './components/agent-top-customers'
 import { TopMerchants } from './components/top-merchants'
-import { MerchantActivityHeatmap } from './components/merchant-activity-heatmap'
+import { ActivityHeatmap } from '@/components/ui/activity-heatmap'
 import { TransactionFrequencyAnalysis } from './components/transaction-frequency-analysis'
 
-import { agentDataExport, useAgentStats } from '@/hooks/use-agents'
+import { agentDataExport, useAgentStats, useAgentMerchantActivityHeatmap } from '@/hooks/use-agents'
 import { useAgent } from '@/context/agent-context'
 import type { DateFilters } from '@/types/api'
 
@@ -53,6 +53,12 @@ export default function Dashboard() {
   const { data: agentStats, isLoading: statsLoading } = useAgentStats(
     selectedAgent,
     dateFilters,
+    !!selectedAgent
+  )
+
+  const { data: heatmapData, isLoading: heatmapLoading, error: heatmapError } = useAgentMerchantActivityHeatmap(
+    selectedAgent || '',
+    { granularity, ...dateFilters },
     !!selectedAgent
   )
 
@@ -454,11 +460,19 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <ErrorBoundary>
-                  <MerchantActivityHeatmap
-                    agentId={selectedAgent}
+                  <ActivityHeatmap
+                    data={heatmapData}
+                    isLoading={heatmapLoading}
+                    error={heatmapError}
+                    entityType="merchant"
+                    entityIdField="merchant"
+                    entityLabel="Merchant"
+                    entityLabelPlural="merchants"
                     granularity={granularity}
                     dateFilters={dateFilters}
                     mode={heatmapMode}
+                    itemsPerPage={10}
+                    noEntityMessage="Please select an agent to view heatmap"
                   />
                 </ErrorBoundary>
               </CardContent>

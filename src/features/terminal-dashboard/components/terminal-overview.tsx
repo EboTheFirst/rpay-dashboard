@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useTerminalStats } from '@/hooks/use-terminals'
 import type { DateFilters } from '@/types/api'
 import { TrendingUp, DollarSign, Users, Activity } from 'lucide-react'

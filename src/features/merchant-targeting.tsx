@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Search, MessageCircle, Sparkles } from 'lucide-react'
+import { Search, MessageCircle, Sparkles } from 'lucide-react'
 import { useAgent } from '@/context/agent-context'
 import { DateFiltersComponent } from '@/components/date-filters'
 import type { DateFilters } from '@/types/api'

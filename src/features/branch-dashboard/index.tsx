@@ -25,9 +25,9 @@ import { ArrowLeft, Monitor } from 'lucide-react'
 import { BranchOverview } from './components/branch-overview'
 import { BranchTopCustomers } from './components/branch-top-customers'
 import { BranchTopTerminals } from './components/branch-top-terminals'
-import { BranchTerminalActivityHeatmap } from './components/branch-terminal-activity-heatmap'
+import { ActivityHeatmap } from '@/components/ui/activity-heatmap'
 import { BranchTransactionFrequencyAnalysis } from './components/branch-transaction-frequency-analysis'
-import { useBranchStats, useBranchDetails, branchDataExport } from '@/hooks/use-branches'
+import { useBranchStats, useBranchDetails, branchDataExport, useBranchTerminalActivityHeatmap } from '@/hooks/use-branches'
 import type { DateFilters } from '@/types/api'
 import { useNavigate } from '@tanstack/react-router'
 import { useTeam } from '@/context/team-context'
@@ -49,7 +49,7 @@ export default function BranchDashboard({ branchId, merchantId }: BranchDashboar
   const [heatmapMode, setHeatmapMode] = useState<'volume' | 'count' | 'average'>('volume')
   const STATIC_LIMIT = 5
 
-  const [downloading, setDownloading] = useState<boolean>(false)
+  const [_downloading, setDownloading] = useState<boolean>(false)
   const [downloadText, setDownloadText] = useState<string>("Download")
 
   // Determine if back button should be shown
@@ -62,8 +62,14 @@ export default function BranchDashboard({ branchId, merchantId }: BranchDashboar
     !!branchId
   )
 
-  const { data: branchDetails, isLoading: detailsLoading } = useBranchDetails(
+  const { data: branchDetails } = useBranchDetails(
     branchId,
+    !!branchId
+  )
+
+  const { data: heatmapData, isLoading: heatmapLoading, error: heatmapError } = useBranchTerminalActivityHeatmap(
+    branchId || '',
+    { granularity, ...dateFilters },
     !!branchId
   )
 
@@ -426,11 +432,18 @@ export default function BranchDashboard({ branchId, merchantId }: BranchDashboar
               </CardHeader>
               <CardContent>
                 <ErrorBoundary>
-                  <BranchTerminalActivityHeatmap
-                    branchId={branchId}
+                  <ActivityHeatmap
+                    data={heatmapData}
+                    isLoading={heatmapLoading}
+                    error={heatmapError}
+                    entityType="terminal"
+                    entityIdField="terminal"
+                    entityLabel="Terminal"
+                    entityLabelPlural="terminals"
                     granularity={granularity}
                     dateFilters={dateFilters}
                     mode={heatmapMode}
+                    itemsPerPage={10}
                   />
                 </ErrorBoundary>
               </CardContent>

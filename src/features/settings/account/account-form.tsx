@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { CalendarIcon, CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { cn } from '@/lib/utils'
-import { showSubmittedData } from '@/utils/show-submitted-data'
+// import { showSubmittedData } from '@/utils/show-submitted-data'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -73,7 +73,7 @@ export function AccountForm() {
     defaultValues,
   })
 
-  function onSubmit(data: AccountFormValues) {
+  function onSubmit(_data: AccountFormValues) {
     // showSubmittedData(data)
   }
 

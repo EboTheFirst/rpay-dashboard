@@ -46,7 +46,7 @@ export function TerminalTransactionVolume({
 
   // Use the appropriate data based on mode
   const data = mode === 'amount' ? volumeData : countData
-  const error = null // We'll handle errors in the parent component
+  // const error = null // We'll handle errors in the parent component
 
   // Get theme-appropriate colors (matching other dashboard components)
   const getChartColor = () => {

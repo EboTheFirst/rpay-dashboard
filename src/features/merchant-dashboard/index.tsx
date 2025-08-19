@@ -25,9 +25,10 @@ import { ArrowLeft, Building2 } from 'lucide-react'
 import { MerchantOverview } from './components/merchant-overview'
 import { MerchantTopCustomers } from './components/merchant-top-customers'
 import { MerchantTopBranches } from './components/merchant-top-branches'
-import { MerchantBranchActivityHeatmap } from './components/merchant-branch-activity-heatmap'
+import { ActivityHeatmap } from '@/components/ui/activity-heatmap'
 import { MerchantTransactionFrequencyAnalysis } from './components/merchant-transaction-frequency-analysis'
 import { useMerchantStats, useMerchantDetails, merchantDataExport } from '@/hooks/use-merchants'
+import { useMerchantBranchActivityHeatmap } from '@/hooks/use-branches'
 import type { DateFilters } from '@/types/api'
 import { useNavigate } from '@tanstack/react-router'
 import { useTeam } from '@/context/team-context'
@@ -48,7 +49,7 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
   const [heatmapMode, setHeatmapMode] = useState<'volume' | 'count' | 'average'>('volume')
   const STATIC_LIMIT = 5
 
-  const [downloading, setDownloading] = useState<boolean>(false)
+  const [_downloading, setDownloading] = useState<boolean>(false)
   const [downloadText, setDownloadText] = useState<string>("Download")
 
   // Determine if back button should be shown
@@ -68,6 +69,12 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
   )
 
   const { data: merchantDetails } = useMerchantDetails(merchantId, !!merchantId)
+
+  const { data: heatmapData, isLoading: heatmapLoading, error: heatmapError } = useMerchantBranchActivityHeatmap(
+    merchantId || '',
+    { granularity, ...dateFilters },
+    !!merchantId
+  )
 
   const clearFilters = () => {
     setDateFilters({})
@@ -475,11 +482,19 @@ export default function MerchantDashboard({ merchantId }: MerchantDashboardProps
               </CardHeader>
               <CardContent>
                 <ErrorBoundary>
-                  <MerchantBranchActivityHeatmap
-                    merchantId={merchantId}
+                  <ActivityHeatmap
+                    data={heatmapData}
+                    isLoading={heatmapLoading}
+                    error={heatmapError}
+                    entityType="branch"
+                    entityIdField="branch"
+                    entityDisplayField="branch_name"
+                    entityLabel="Branch"
+                    entityLabelPlural="branches"
                     granularity={granularity}
                     dateFilters={dateFilters}
                     mode={heatmapMode}
+                    itemsPerPage={10}
                   />
                 </ErrorBoundary>
               </CardContent>
